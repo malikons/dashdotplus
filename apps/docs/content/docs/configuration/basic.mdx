@@ -9,7 +9,15 @@ tags:
 
 Selects which widgets to show on the dashboard.
 
-The available options are: `os`, `cpu`, `storage`, `ram`, `network`, `gpu`.
+A widget that is omitted from the list is simply not shown - and not collected
+either: no data for it is fetched in the background. To hide a widget, remove it
+from this list. The order of the entries is also the order of the widgets.
+
+The available options are: `os`, `cpu`, `storage`, `ram`, `network`, `gpu`,
+`containers`.
+
+`containers` is opt-in and, unlike the other widgets, needs read access to the
+Docker socket - see [Containers Configuration](./containers).
 
 - type: `string (comma separated list)`
 - default: `os,cpu,storage,ram,network`

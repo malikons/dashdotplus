@@ -1,0 +1,157 @@
+---
+title: Containers
+tags:
+  - Configuration
+  - Widgets
+---
+
+<Callout title="Note" type="warn">
+- The containers widget is **disabled by default**. To use it, add it to
+  [`DASHDOT_WIDGET_LIST`](./basic#dashdot_widget_list) (e.g. `os,cpu,storage,ram,network,containers`).
+  Without that, nothing is polled and no widget is rendered.
+- It needs read access to the Docker socket - see [Socket access](#socket-access).
+  If the socket cannot be reached, the widget shows "Docker socket not reachable" instead of data.
+- It only monitors **Docker** containers. Other runtimes (Podman, plain systemd units) are not covered.
+</Callout>
+
+## How it works
+
+The backend talks to the Docker Engine HTTP API directly over the unix socket
+using Node's built-in `http` module - no docker CLI, and no extra dependency is
+added to the image. On every poll (`DASHDOT_CONTAINERS_POLL_INTERVAL`) it:
+
+1. lists the running containers (`GET /containers/json`),
+2. requests one `GET /containers/{id}/stats?stream=false` per container,
+   **in parallel** (bounded to 16 concurrent requests),
+3. turns the cumulative counters into rates by diffing against the previous poll.
+
+Docker's stats endpoint samples over a ~1s window per request, so fetching
+sequentially would take one second _per_ container. With parallel requests a
+host with 14 containers completes a full poll in roughly 2s instead of 14s.
+
+Containers are listed alphabetically and paged, so the order stays stable while
+the values update - charts do not jump around between polls.
+
+<Callout title="About the CPU values" type="info">
+The CPU number is the share of **total host capacity**, not of a single core.
+All containers together can therefore never exceed the value shown by the
+[`cpu` widget](./cpu), which makes them directly comparable.
+
+Note that `docker stats` reports per-core normalised values (multiplied by the
+CPU count), so its numbers will read up to `nCPU` times higher than the ones
+shown here.
+</Callout>
+
+### Metrics
+
+| Metric       | Source                                                           | Unit                                     |
+| ------------ | ---------------------------------------------------------------- | ---------------------------------------- |
+| CPU          | cgroup `cpuacct` delta over `system_cpu_usage` delta             | `%` of the whole host (0-100)            |
+| Memory       | cgroup `memory.current` minus inactive file cache (working set)  | bytes, chart in bytes                    |
+| Network      | sum of `rx_bytes` / `tx_bytes` over the container's interfaces   | bytes per second (cumulative totals kept) |
+| Disk I/O     | `blkio_stats.io_service_bytes_recursive` summed per operation    | bytes per second (cumulative totals kept) |
+| Processes    | `pids_stats.current`                                            | count (shown in the CPU tooltip)         |
+
+Cumulative counters are reset by Docker when a container restarts. A negative
+delta is detected and reported as `0` instead of a negative rate.
+
+<Callout title="Embedding" type="info">
+Unlike the other widgets, `containers` cannot be embedded as a standalone graph:
+the `graph` query parameter of the [Widgets integration](../integration/widgets)
+only accepts `cpu`, `storage`, `ram`, `network` and `gpu`.
+</Callout>
+
+## Socket access
+
+The widget reads the Docker socket, which has to be mounted into the container:
+
+```yaml
+services:
+  dash:
+    image: mauricenino/dashdot
+    volumes:
+      - /:/mnt/host:ro
+      # only needed for the containers widget
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      DASHDOT_WIDGET_LIST: 'os,cpu,storage,ram,network,containers'
+```
+
+The image runs as root, so the socket's usual `660 root:docker` permissions are
+no problem. For rootless Docker the socket lives elsewhere - point
+`DASHDOT_DOCKER_SOCKET_PATH` at it.
+
+A complete annotated compose file, covering every option below and how to turn
+individual widgets off again, is `docker-compose.example.yml` in the repository
+root.
+
+## Options
+
+### `DASHDOT_DOCKER_SOCKET_PATH`
+
+The path of the Docker Engine unix socket.
+
+- type: `string`
+- default: `/var/run/docker.sock`
+
+### `DASHDOT_CONTAINERS_EXCLUDE`
+
+A comma-separated list of substrings. Any running container whose name **or**
+image contains one of them is hidden from the widget.
+
+Useful to hide the dash. container itself, e.g. `DASHDOT_CONTAINERS_EXCLUDE=dashdot`.
+
+- type: `string (comma separated list)`
+- default: `unset`
+
+### `DASHDOT_CONTAINERS_DEFAULT_METRIC`
+
+Which metric the widget shows after a page load. It can be switched at runtime
+with the selector in the widget's top right corner.
+
+The available options are: `cpu`, `mem`, `net`, `disk`.
+
+- type: `string`
+- default: `cpu`
+
+## Styles
+
+### `DASHDOT_CONTAINERS_WIDGET_ITEMS_PER_PAGE`
+
+How many containers are shown per page (one info row and one chart each).
+
+- type: `number`
+- default: `4`
+
+### `DASHDOT_CONTAINERS_WIDGET_GROW`
+
+To adjust the relative size of the containers widget.
+
+- type: `number`
+- default: `6`
+
+### `DASHDOT_CONTAINERS_WIDGET_MIN_WIDTH`
+
+To adjust the minimum width of the containers widget (in px).
+
+- type: `number`
+- default: `700`
+
+### `DASHDOT_CONTAINERS_SHOWN_DATAPOINTS`
+
+The amount of datapoints kept per container chart. Combined with
+`DASHDOT_CONTAINERS_POLL_INTERVAL` this decides how much history is visible -
+the defaults keep 60 samples at 5s, i.e. 5 minutes.
+
+- type: `number`
+- default: `60`
+
+### `DASHDOT_CONTAINERS_POLL_INTERVAL`
+
+Read the container stats every x milliseconds.
+
+Must stay comfortably above the time a full poll takes (~2s for 14 containers),
+otherwise polls will overlap each other.
+
+- type: `number`
+- default: `5000`

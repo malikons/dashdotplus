@@ -1,0 +1,45 @@
+# Example production setup for dash. with the containers widget enabled.
+#
+# WIDGETS ARE ENABLED / DISABLED VIA `DASHDOT_WIDGET_LIST` BELOW:
+# just remove any widget you do not want to see. The available widgets are
+# `os`, `cpu`, `storage`, `ram`, `network`, `gpu` and `containers`.
+#
+# The containers widget is opt-in and additionally needs the Docker socket
+# mounted. If you drop `containers` from the list, remove that mount as well -
+# nothing is polled or collected once the widget is not listed.
+
+services:
+  dash:
+    image: mauricenino/dashdot
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - '80:3001'
+    volumes:
+      # dash. reads the host system from here - always required
+      - /:/mnt/host:ro
+      # only required while `containers` is part of DASHDOT_WIDGET_LIST
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      DASHDOT_WIDGET_LIST: 'os,cpu,storage,ram,network,containers'
+
+      # --- containers widget (all optional, defaults shown) ---
+      # DASHDOT_CONTAINERS_DEFAULT_METRIC: 'cpu'   # cpu | mem | net | disk
+      # DASHDOT_CONTAINERS_EXCLUDE: 'dashdot'      # hide by name or image substring
+      # DASHDOT_CONTAINERS_WIDGET_ITEMS_PER_PAGE: '4'
+      # DASHDOT_CONTAINERS_WIDGET_GROW: '6'
+      # DASHDOT_CONTAINERS_WIDGET_MIN_WIDTH: '700'
+      # DASHDOT_CONTAINERS_POLL_INTERVAL: '5000'
+      # DASHDOT_CONTAINERS_SHOWN_DATAPOINTS: '60'
+      # DASHDOT_DOCKER_SOCKET_PATH: '/var/run/docker.sock'
+
+      # --- other widgets (all optional) ---
+      # DASHDOT_CPU_LABEL_LIST: 'brand, model, cores, frequency'
+      # DASHDOT_RAM_LABEL_LIST: 'brand, type, size, frequency'
+      # DASHDOT_NETWORK_LABEL_LIST: 'type, speed_up, speed_down, public_ip'
+      # DASHDOT_STORAGE_LABEL_LIST: 'brand, type, size'
+      # DASHDOT_STORAGE_WIDGET_ITEMS_PER_PAGE: '4'
+      # DASHDOT_ALWAYS_SHOW_PERCENTAGES: 'false'
+      # DASHDOT_USE_IMPERIAL: 'false'
+      # DASHDOT_PAGE_TITLE: 'dash.'
+      # DASHDOT_ROUTING_PATH: '/'

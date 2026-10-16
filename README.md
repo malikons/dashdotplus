@@ -87,6 +87,80 @@ install options instead (`docker-compose`, or from source), have a look at the
 
 To read more about configuration options, you can visit the [configuration options](https://getdashdot.com/docs/configuration).
 
+## Containers Widget
+
+This build adds an optional widget that monitors every running Docker
+container — CPU, memory, network and disk I/O — in the same style as the
+existing host-level widgets.
+
+### Enabling it
+
+The widget is **disabled by default**. It only appears once you opt in via
+`DASHDOT_WIDGET_LIST`, and it needs the Docker socket mounted:
+
+```yaml
+services:
+  dash:
+    image: mauricenino/dashdot
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - '80:3001'
+    volumes:
+      - /:/mnt/host:ro
+      # only required for the containers widget
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      DASHDOT_WIDGET_LIST: 'os,cpu,storage,ram,network,containers'
+```
+
+Without the socket the widget renders a "Docker socket not reachable" notice.
+Without `containers` in `DASHDOT_WIDGET_LIST` it is not polled, not collected
+and not rendered at all — the default remains `os,cpu,storage,ram,network`.
+
+A complete annotated version — including every optional containers setting and
+how to switch individual widgets back off — is in
+[`docker-compose.example.yml`](./docker-compose.example.yml).
+
+### How it works
+
+The server queries the Docker Engine HTTP API over the unix socket using Node's
+built-in `http` module, so **no docker CLI and no new runtime dependency** is
+needed. On every `DASHDOT_CONTAINERS_POLL_INTERVAL` (default `5000`ms) it lists
+the running containers and requests their stats **in parallel** — each stats
+call takes about 1s inside Docker, so parallel fetching keeps a 14-container
+host at roughly 2s per poll instead of 14s.
+
+Reported metrics:
+
+- **CPU** — share of _total host capacity_, so all containers added together
+  line up with the host `cpu` widget. (`docker stats` reports per-core numbers
+  and therefore reads up to `nCPU` times higher.)
+- **Memory** — cgroup working set (`usage` minus inactive file cache)
+- **Network / Disk I/O** — bytes per second, derived from the cumulative
+  counters of the previous poll; restarts reset counters to `0`, never negative
+- Containers are listed alphabetically and paged, so charts do not reshuffle
+  between polls
+
+Full option reference: [Containers Configuration](./apps/docs/content/docs/configuration/containers.mdx)
+
+## Improved Board Detection
+
+Upstream derives hardware identity from DMI and SPD, both of which misreport on
+single board computers. This fork reads the device tree instead, so a Raspberry
+Pi now reports real values with **no `DASHDOT_OVERRIDE_*` needed**:
+
+| Field | Upstream | This fork |
+| --- | --- | --- |
+| CPU brand | `Sony UK` — the PCB manufacturer, from the Pi revision code | `Broadcom` — from the SoC entry `brcm,bcm2712` |
+| Memory brand | unset — soldered LPDDR has no SPD | `Raspberry Pi 5 (onboard)` — from the board model |
+| Storage brand | empty on NVMe — drives expose no `VENDOR` | `SK hynix` — derived from the drive model |
+
+The existing `DASHDOT_OVERRIDE_*` variables still take precedence, so this only
+fills in values that would otherwise be wrong or missing. x86 hosts are
+unaffected: they have no device tree, so every lookup falls through to
+`systeminformation` unchanged.
+
 ## Developer Notice
 
 > Note: Due to the consistently growing size of the `.git` folder, which was

@@ -2,7 +2,7 @@
 title: Configuration
 ---
 
-import { CpuIcon, SettingsIcon, HardDriveIcon, ServerIcon, MemoryStickIcon, NetworkIcon, GpuIcon } from 'lucide-react';
+import { BoxesIcon, CpuIcon, SettingsIcon, HardDriveIcon, ServerIcon, MemoryStickIcon, NetworkIcon, GpuIcon } from 'lucide-react';
 
 <Cards>
   <Card
@@ -53,5 +53,13 @@ import { CpuIcon, SettingsIcon, HardDriveIcon, ServerIcon, MemoryStickIcon, Netw
     title="GPU Configuration"
   >
     General settings for design, layout, and more.
+  </Card>
+  <Card
+    href="configuration/containers"
+    icon={<BoxesIcon />}
+    title="Containers Configuration"
+  >
+    Optional per-container monitoring: CPU, memory, network, and disk usage of
+    every running Docker container.
   </Card>
 </Cards>

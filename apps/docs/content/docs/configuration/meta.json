@@ -6,6 +6,7 @@
     "storage",
     "ram",
     "network",
-    "gpu"
+    "gpu",
+    "containers"
   ]
 }

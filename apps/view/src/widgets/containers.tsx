@@ -144,6 +144,14 @@ const Message = styled(ThemedText)`
   opacity: 0.75;
 `;
 
+// An unreachable Docker socket and a host with no containers read the same
+// from the dashboard, so both get the same calm line - neither is a fault
+// worth alarming anyone about. The socket hint stays on hover, where it can
+// still help whoever actually expected containers to be here.
+const NO_CONTAINERS_MESSAGE = 'No containers detected on this host.';
+const SOCKET_HINT =
+  'The Docker socket could not be reached. Mount /var/run/docker.sock into the dashdotplus container to enable per-container stats.';
+
 type ContainersWidgetProps = {
   load: ContainersLoad[];
   data: ContainersInfo;
@@ -195,23 +203,16 @@ export const ContainersWidget: FC<ContainersWidgetProps> = ({
     return map;
   }, [load, metric]);
 
-  const infos: InfoTableArr = available
-    ? containers.map((container) => ({
-        label: truncate(container.name, 26),
-        value: definition.format(definition.value(container)),
-        tooltip: `${container.name} · ${container.image} · ${container.status} · ${definition.detail(
-          container,
-          data.hostRam,
-        )}`,
-      }))
-    : [
-        {
-          label: 'Docker',
-          value: 'not available',
-          tooltip:
-            'The docker socket could not be reached. Mount it into the dashdot container to enable per-container stats.',
-        },
-      ];
+  // an unreachable socket is reported exactly like a host with no containers -
+  // from out here they are the same thing, so there is no error row here
+  const infos: InfoTableArr = containers.map((container) => ({
+    label: truncate(container.name, 26),
+    value: definition.format(definition.value(container)),
+    tooltip: `${container.name} · ${container.image} · ${container.status} · ${definition.detail(
+      container,
+      data.hostRam,
+    )}`,
+  }));
 
   const runningCount = containers.length;
   const totalCpu = containers.reduce((acc, c) => acc + c.cpu, 0);
@@ -229,11 +230,11 @@ export const ContainersWidget: FC<ContainersWidgetProps> = ({
 
   let content: React.ReactNode;
   if (!available) {
-    content = <Message>Docker socket not reachable.</Message>;
+    content = <Message title={SOCKET_HINT}>{NO_CONTAINERS_MESSAGE}</Message>;
   } else if (!hasSamples) {
     content = <Message>Waiting for container stats…</Message>;
   } else if (containers.length === 0) {
-    content = <Message>No running containers.</Message>;
+    content = <Message>{NO_CONTAINERS_MESSAGE}</Message>;
   } else if (shown.length === 0) {
     // the container list shrank underneath the current page
     content = <Message>No containers on this page.</Message>;

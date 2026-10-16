@@ -6,11 +6,13 @@ tags:
 ---
 
 <Callout title="Note" type="warn">
-- The containers widget is **disabled by default**. To use it, add it to
-  [`DASHDOT_WIDGET_LIST`](./basic#dashdot_widget_list) (e.g. `os,cpu,storage,ram,network,containers`).
-  Without that, nothing is polled and no widget is rendered.
+- The containers widget is **on by default**. Remove it from
+  [`DASHDOT_WIDGET_LIST`](./basic#dashdot_widget_list) to turn it off - while it
+  is not listed, nothing is polled and no widget is rendered.
 - It needs read access to the Docker socket - see [Socket access](#socket-access).
-  If the socket cannot be reached, the widget shows "Docker socket not reachable" instead of data.
+  If the socket cannot be reached, the widget shows the same calm "No
+  containers detected on this host." line it shows for a host that genuinely
+  has none - it is never styled as an error.
 - It only monitors **Docker** containers. Other runtimes (Podman, plain systemd units) are not covered.
 </Callout>
 
@@ -99,7 +101,7 @@ The path of the Docker Engine unix socket.
 A comma-separated list of substrings. Any running container whose name **or**
 image contains one of them is hidden from the widget.
 
-Useful to hide the dash. container itself, e.g. `DASHDOT_CONTAINERS_EXCLUDE=dashdot`.
+Useful to hide the dash.+ container itself, e.g. `DASHDOT_CONTAINERS_EXCLUDE=dashdot`.
 
 - type: `string (comma separated list)`
 - default: `unset`

@@ -55,7 +55,7 @@ export const CONFIG: Config = {
   gpu_model_filter: lst(penv('GPU_MODEL_FILTER') ?? ''),
 
   widget_list: lst(
-    penv('WIDGET_LIST') ?? 'os,cpu,storage,ram,network',
+    penv('WIDGET_LIST') ?? 'os,cpu,storage,ram,network,containers',
   ) as any[],
   os_label_list: lst(penv('OS_LABEL_LIST') ?? 'os,arch,up_since') as any[],
   cpu_label_list: lst(

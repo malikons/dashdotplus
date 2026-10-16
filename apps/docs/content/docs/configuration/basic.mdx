@@ -16,11 +16,13 @@ from this list. The order of the entries is also the order of the widgets.
 The available options are: `os`, `cpu`, `storage`, `ram`, `network`, `gpu`,
 `containers`.
 
-`containers` is opt-in and, unlike the other widgets, needs read access to the
-Docker socket - see [Containers Configuration](./containers).
+`containers` is part of the default list, but unlike the other widgets it
+needs read access to the Docker socket - see
+[Containers Configuration](./containers). Drop it from the list if you do not
+mount one.
 
 - type: `string (comma separated list)`
-- default: `os,cpu,storage,ram,network`
+- default: `os,cpu,storage,ram,network,containers`
 
 | `os,cpu,storage,ram,network`                               | `ram,cpu,storage,network`                                                     |
 | ---------------------------------------------------------- | ----------------------------------------------------------------------------- |
@@ -35,7 +37,7 @@ The port where the express backend is running (the backend serves the frontend, 
 
 ## `DASHDOT_ROUTING_PATH`
 
-The path where dash. is being served. This is useful if you want to run dash. behind a reverse proxy on a sub-path
+The path where dash.+ is being served. This is useful if you want to run dash.+ behind a reverse proxy on a sub-path
 (e.g `https://example.com/dashdot` would need a value of `/dashdot`).
 
 - type: `string`
@@ -46,7 +48,7 @@ The path where dash. is being served. This is useful if you want to run dash. be
 If you want to show a custom string in the browser page title.
 
 - type: `string`
-- default: `dash.`
+- default: `dash.+`
 
 ## `DASHDOT_DISABLE_INTEGRATIONS`
 
@@ -64,7 +66,7 @@ Disables background collection of metrics.
 
 ## `DASHDOT_SHOW_DASH_VERSION`
 
-If you want to show the version number of your dash. instance on the bottom right of the page, or alternatively on the GitHub icon (hover).
+If you want to show the version number of your dash.+ instance on the bottom right of the page, or alternatively on the GitHub icon (hover).
 
 The available options are: `bottom_right`, `icon_hover` and `none`.
 

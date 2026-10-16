@@ -1,12 +1,12 @@
-# Example production setup for dash. with the containers widget enabled.
+# Example production setup for dash.+ with the containers widget enabled.
 #
 # WIDGETS ARE ENABLED / DISABLED VIA `DASHDOT_WIDGET_LIST` BELOW:
 # just remove any widget you do not want to see. The available widgets are
 # `os`, `cpu`, `storage`, `ram`, `network`, `gpu` and `containers`.
 #
-# The containers widget is opt-in and additionally needs the Docker socket
-# mounted. If you drop `containers` from the list, remove that mount as well -
-# nothing is polled or collected once the widget is not listed.
+# The containers widget additionally needs the Docker socket mounted. If you
+# drop `containers` from the list, remove that mount as well - nothing is
+# polled or collected once the widget is not listed.
 
 services:
   dash:
@@ -16,7 +16,7 @@ services:
     ports:
       - '80:3001'
     volumes:
-      # dash. reads the host system from here - always required
+      # dash.+ reads the host system from here - always required
       - /:/mnt/host:ro
       # only required while `containers` is part of DASHDOT_WIDGET_LIST
       - /var/run/docker.sock:/var/run/docker.sock
@@ -41,5 +41,5 @@ services:
       # DASHDOT_STORAGE_WIDGET_ITEMS_PER_PAGE: '4'
       # DASHDOT_ALWAYS_SHOW_PERCENTAGES: 'false'
       # DASHDOT_USE_IMPERIAL: 'false'
-      # DASHDOT_PAGE_TITLE: 'dash.'
+      # DASHDOT_PAGE_TITLE: 'dash.+'
       # DASHDOT_ROUTING_PATH: '/'

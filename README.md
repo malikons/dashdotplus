@@ -22,7 +22,7 @@
 
 | Feature | Summary |
 | --- | --- |
-| [Containers widget](#containers-widget) | Per-container CPU, memory, network and disk I/O. Opt-in, disabled by default. |
+| [Containers widget](#containers-widget) | Per-container CPU, memory, network and disk I/O. On by default; needs the Docker socket. |
 | [Board detection](#improved-board-detection) | Real hardware identity on Raspberry Pi and other SBCs — no `DASHDOT_OVERRIDE_*` needed. |
 | [Themes](#themes) | Three dashboard themes — the original glass look, an htop-style terminal look, and Windows 98 — switchable at runtime. |
 
@@ -105,10 +105,11 @@ This build adds an optional widget that monitors every running Docker
 container — CPU, memory, network and disk I/O — in the same style as the
 existing host-level widgets.
 
-### Enabling it
+### Requirements
 
-The widget is **disabled by default**. It only appears once you opt in via
-`DASHDOT_WIDGET_LIST`, and it needs the Docker socket mounted:
+The widget is **on by default** and ships in the standard widget list. Unlike
+the other widgets it needs read access to the Docker socket - the one mount a
+stock dashdot setup does not already have:
 
 ```yaml
 services:
@@ -126,9 +127,13 @@ services:
       DASHDOT_WIDGET_LIST: 'os,cpu,storage,ram,network,containers'
 ```
 
-Without the socket the widget renders a "Docker socket not reachable" notice.
-Without `containers` in `DASHDOT_WIDGET_LIST` it is not polled, not collected
-and not rendered at all — the default remains `os,cpu,storage,ram,network`.
+Without the socket the widget shows a calm "No containers detected on this
+host." — exactly the same line it shows for a host that genuinely has no
+containers, so neither case looks like a fault.
+If you drop `containers` from `DASHDOT_WIDGET_LIST` it is not polled, not
+collected and not rendered at all — the default is
+`os,cpu,storage,ram,network,containers`, so remove both the widget and the
+mount if you do not want it.
 
 A complete annotated version — including every optional containers setting and
 how to switch individual widgets back off — is in
@@ -190,9 +195,10 @@ corner of the OS widget:
 | **Windows 98** | Fixed light. Teal desktop, grey raised/sunken bevels and the classic navy selection colour. |
 
 Because the two alternate themes are fixed-palette, the Dark Mode toggle hides
-while one of them is active. The choice is stored per browser in
-`localStorage`, so it does not need a server restart or a config change — and
-setting `DASHDOT_THEME` is not required for the original look.
+while one of them is active. The choice is a **browser** setting, written to
+`localStorage` — there is no environment variable for it and no server restart
+or config change is involved. Every browser remembers its own choice, and a
+fresh one always starts on Original.
 
 Themes describe the *material* of a widget as well as its colours (pane radius
 and background, chart rounding and bevel, icon styling), so new themes can be

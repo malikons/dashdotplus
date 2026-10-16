@@ -1,7 +1,7 @@
 import { htopTheme, win98Theme } from './palettes';
 import { darkTheme, lightTheme, type Theme, type ThemeId } from './theme';
 
-/** the themes that ship with dashdot */
+/** the themes that ship with dash.+ */
 export const THEME_IDS: ThemeId[] = ['original', 'htop', 'win98'];
 
 export const THEME_LABELS: Record<ThemeId, string> = {

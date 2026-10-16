@@ -4,7 +4,11 @@
     "**/.pnp.*": true
   },
   "biome.enabled": true,
-  "cSpell.words": ["dashdot"],
+  "cSpell.words": [
+    "dashdot",
+    "dashdotplus",
+    "mdx"
+  ],
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit",
     "source.biome": "explicit",

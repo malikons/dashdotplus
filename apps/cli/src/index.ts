@@ -51,7 +51,7 @@ yargs(hideBin(process.argv))
           =========
           Yarn: ${yarnVersion}
           Node: ${nodeVersion}
-          Dash: ${version}
+          dash.+: ${version}
 
           Cwd: ${process.cwd()}
           Hash: ${buildhash}

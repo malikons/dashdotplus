@@ -180,7 +180,7 @@ export default {
         Or alternatively, provide a local file with speedtest results,
         using DASHDOT_SPEEDTEST_FROM_PATH.
   
-        For more help on how to setup dashdot, look here:
+        For more help on how to set up dash.+, look here:
         https://github.com/malikons/dashdotplus/blob/main/apps/docs/content/docs/installation/from-source.mdx
       `);
     }

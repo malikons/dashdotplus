@@ -2,6 +2,7 @@ import type { CpuInfo, CpuLoad } from '@dashdot/common';
 import * as si from 'systeminformation';
 import { CONFIG } from '../config';
 import { getStaticServerInfo } from '../static-info';
+import { getSoc, isRaspberryPi } from './board';
 
 const normalizeCpuModel = (cpuModel: string) => {
   return cpuModel
@@ -34,9 +35,13 @@ export default {
   },
   static: async (): Promise<CpuInfo> => {
     const cpuInfo = await si.cpu();
+    // On a Raspberry Pi systeminfo reports the PCB manufacturer here - Sony
+    // fab the boards - because it reads the Pi revision code. The device tree
+    // names the SoC, which is what the brand actually stands for.
+    const soc = isRaspberryPi() ? getSoc() : undefined;
 
     return {
-      brand: cpuInfo.manufacturer,
+      brand: soc?.vendor ?? cpuInfo.manufacturer,
       model: normalizeCpuModel(cpuInfo.brand),
       cores: cpuInfo.physicalCores,
       ecores: cpuInfo.efficiencyCores ?? 0,

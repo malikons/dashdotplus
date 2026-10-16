@@ -2,6 +2,7 @@ import { RaidType, type StorageInfo, sumUp } from '@dashdot/common';
 import * as si from 'systeminformation';
 import { CONFIG } from '../../config';
 import { PLATFORM_IS_WINDOWS } from '../../utils';
+import { readBlockDeviceModel, vendorFromModel } from '../board';
 
 type Block = si.Systeminformation.BlockDevicesData;
 type Disk = si.Systeminformation.DiskLayoutData;
@@ -119,7 +120,9 @@ export const mapToStorageLayout = (
 
     const disk: StorageInfo[number]['disks'][number] = {
       device: hostWin32 ? (diskBlock.device ?? '') : device,
-      brand: nativeDisk.vendor,
+      // lsblk leaves VENDOR empty for NVMe drives, so fall back to the model
+      // the kernel reports for the device
+      brand: nativeDisk.vendor || vendorFromModel(readBlockDeviceModel(device)),
       type: getDiskType(nativeDisk.type, nativeDisk.interfaceType),
     };
 

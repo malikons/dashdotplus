@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2021 Maurice el-Banna
+Copyright (c) 2021 Maurice el-Banna (Maurice Guttenberger)
 Copyright (c) 2026 Shiraz Malik
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,7 +24,8 @@ SOFTWARE.
 ---
 
 dash.+ is a fork of dashdot (https://github.com/MauriceNino/dashdot),
-created by Maurice el-Banna and licensed under the MIT License above. The
-original copyright notice is retained as that license requires. Substantial
-portions of this codebase - including the entire server, view and docs
-applications - originate from that project.
+created by Maurice Guttenberger (github.com/MauriceNino), who also
+publishes as Maurice el-Banna - the name under which the copyright above
+is held. The original notice is retained as the MIT License requires, and
+substantial portions of this codebase - including the entire server, view
+and docs applications - originate from that project.

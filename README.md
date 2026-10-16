@@ -9,7 +9,7 @@
 <p align="center">
   A feature-focused fork of
   <a href="https://github.com/MauriceNino/dashdot" target="_blank">dashdot</a>
-  by Maurice el-Banna.
+  by <a href="https://github.com/MauriceNino" target="_blank">Maurice Guttenberger</a>.
 </p>
 
 <p align="center">
@@ -177,7 +177,9 @@ look at [Contributing.md](./.github/CONTRIBUTING.md).
 This project is licensed under the [MIT License](./LICENSE.md).
 
 It is a fork of [dashdot](https://github.com/MauriceNino/dashdot), created by
-Maurice el-Banna, also MIT-licensed. The original copyright notice is retained
-in `LICENSE.md` as that license requires, and substantial portions of this
-codebase originate from that project. If you are looking for the original, it
-is at [github.com/MauriceNino/dashdot](https://github.com/MauriceNino/dashdot).
+Maurice Guttenberger (who also publishes as Maurice el-Banna, the name under
+which the original copyright is held), also MIT-licensed. The original
+copyright notice is retained in `LICENSE.md` as that license requires, and
+substantial portions of this codebase originate from that project. If you are
+looking for the original, it is at
+[github.com/MauriceNino/dashdot](https://github.com/MauriceNino/dashdot).

@@ -10,7 +10,7 @@ body:
     id: describe-the-feature
     attributes:
       label: Description of the feature
-      description: Please describe in full detail, what you would like as a feature in dash.. Feel free to add any pictures or details to make it as clear as possible.
+      description: Please describe in full detail, what you would like as a feature in dash.+ Feel free to add any pictures or details to make it as clear as possible.
     validations:
       required: true
   - type: textarea

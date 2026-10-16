@@ -7,7 +7,8 @@
  * material wholesale.
  */
 
-export type ThemeId = 'original';
+/** the themes the view knows how to build */
+export type ThemeId = 'original' | 'htop' | 'win98';
 
 type Theme = {
   dark: boolean;

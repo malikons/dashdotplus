@@ -24,9 +24,17 @@ import { type FC, useEffect, useMemo, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { InfoTable } from '../components/info-table';
 import { ThemedText } from '../components/text';
+import { WidgetControls } from '../components/widget-controls';
+import { WidgetSelect } from '../components/widget-select';
 import { WidgetSwitch } from '../components/widget-switch';
 import { useIsMobile } from '../services/mobile';
 import { useSetting } from '../services/settings';
+import {
+  THEME_HAS_BOTH_MODES,
+  THEME_IDS,
+  THEME_LABELS,
+  type ThemeId,
+} from '../theme';
 import { toInfoTable } from '../utils/format';
 
 const Container = styled.div`
@@ -82,6 +90,19 @@ const StandaloneAppendix = styled(ServerName)`
 const ButtonsContainer = styled.div`
   display: flex;
   flex-direction: row;
+`;
+
+// holds the widget's buttons and its settings controls on one line. Wrapping
+// is deliberate: a widget narrow enough that both cannot fit puts the controls
+// on the line below rather than drawing them over the buttons.
+const TopRow = styled.div`
+  width: 100%;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 15px;
 `;
 
 const Link = styled(Button)`
@@ -158,6 +179,10 @@ type ServerWidgetProps = {
 export const ServerWidget: FC<ServerWidgetProps> = ({ data, config }) => {
   const isMobile = useIsMobile();
   const [darkMode, setDarkMode] = useSetting('darkMode');
+  const [themeVariant, setThemeVariant] = useSetting(
+    'themeVariant',
+    'original',
+  );
   const [uptime, setUptime] = useState(0);
 
   const override = config.override;
@@ -219,21 +244,41 @@ export const ServerWidget: FC<ServerWidgetProps> = ({ data, config }) => {
 
   return (
     <Container>
-      <ButtonsContainer>
-        {config.show_dash_version === 'icon_hover' ? (
-          <Tooltip placement="right" title={data.dash_version}>
-            {ghBtn}
-          </Tooltip>
-        ) : (
-          ghBtn
-        )}
-      </ButtonsContainer>
+      <TopRow>
+        <ButtonsContainer>
+          {config.show_dash_version === 'icon_hover' ? (
+            <Tooltip placement="right" title={data.dash_version}>
+              {ghBtn}
+            </Tooltip>
+          ) : (
+            ghBtn
+          )}
+        </ButtonsContainer>
 
-      <WidgetSwitch
-        label="Dark Mode"
-        checked={darkMode}
-        onChange={() => setDarkMode(!darkMode)}
-      />
+        <WidgetControls>
+          <WidgetSelect
+            inline
+            label="Theme"
+            value={themeVariant}
+            options={THEME_IDS.map((id) => ({
+              value: id,
+              label: THEME_LABELS[id],
+            }))}
+            onChange={(value) => setThemeVariant(value as ThemeId)}
+          />
+
+          {/* the two fixed themes have no light/dark counterpart, so offering the
+            toggle there would suggest a choice that does nothing */}
+          {THEME_HAS_BOTH_MODES[themeVariant] ? (
+            <WidgetSwitch
+              inline
+              label="Dark Mode"
+              checked={darkMode}
+              onChange={() => setDarkMode(!darkMode)}
+            />
+          ) : null}
+        </WidgetControls>
+      </TopRow>
 
       <Heading>
         {config?.show_host && host ? (

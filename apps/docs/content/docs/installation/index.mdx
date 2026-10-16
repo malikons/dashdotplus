@@ -7,24 +7,26 @@ title: Installation
     href="installation/docker"
     title="Docker Installation"
   >
-    The recommended way to run Dash. is using Docker. Follow this guide for a quick and easy setup.
+    The recommended way to run dash.+ is using Docker. Follow this guide for a quick and easy setup.
   </Card>
   <Card
     href="installation/docker-compose"
     title="Docker Compose Installation"
   >
-    Use Docker Compose to manage your Dash. instance along with other services in your homelab.
+    Use Docker Compose to manage your dash.+ instance along with other services in your homelab.
   </Card>
   <Card
     href="installation/from-source"
     title="From Source Installation"
   >
-    Install Dash. from source code for advanced users who want to build and run it manually.
-  </Card>
-  <Card
-    href="installation/helm"
-    title="Helm Chart Installation"
-  >
-    Deploy Dash. on Kubernetes using our Helm chart for easy management and scalability.
+    Install dash.+ from source code for advanced users who want to build and run it manually.
   </Card>
 </Cards>
+
+<Callout title="No Helm chart yet" type="info">
+The community Helm chart documented upstream deploys the original dashdot
+image, not this fork, so it is not offered here. On Kubernetes, point a
+plain Deployment at `ghcr.io/malikons/dashdotplus` instead - the
+[Docker guide](./docker) covers the required mounts and environment
+variables, which carry over unchanged.
+</Callout>

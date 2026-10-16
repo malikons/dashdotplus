@@ -2,7 +2,6 @@
   "pages": [
     "docker",
     "docker-compose",
-    "from-source",
-    "helm"
+    "from-source"
   ]
 }

@@ -2,7 +2,7 @@
 title: Configuration
 ---
 
-import { BoxesIcon, CpuIcon, SettingsIcon, HardDriveIcon, ServerIcon, MemoryStickIcon, NetworkIcon, GpuIcon } from 'lucide-react';
+import { BoxesIcon, CpuIcon, SettingsIcon, HardDriveIcon, ServerIcon, MemoryStickIcon, NetworkIcon, GpuIcon, PaletteIcon } from 'lucide-react';
 
 <Cards>
   <Card
@@ -10,7 +10,7 @@ import { BoxesIcon, CpuIcon, SettingsIcon, HardDriveIcon, ServerIcon, MemoryStic
     icon={<SettingsIcon />}
     title="Basic Configuration"
   >
-    Configure general settings like theme, port, sub-path routing, and more.
+    Configure general settings like page title, port, sub-path routing, and more.
   </Card>
   <Card
     href="configuration/server"
@@ -34,11 +34,11 @@ import { BoxesIcon, CpuIcon, SettingsIcon, HardDriveIcon, ServerIcon, MemoryStic
     Configure ignored devices, filters, mounts, and more.
   </Card>
   <Card
-    href="configuration/memory"
+    href="configuration/ram"
     icon={<MemoryStickIcon />}
     title="Memory Configuration"
   >
-    General settings for design, layout, and more.
+    Configure which labels are shown and how memory usage is reported.
   </Card>
   <Card
     href="configuration/network"
@@ -52,14 +52,22 @@ import { BoxesIcon, CpuIcon, SettingsIcon, HardDriveIcon, ServerIcon, MemoryStic
     icon={<GpuIcon />}
     title="GPU Configuration"
   >
-    General settings for design, layout, and more.
+    Enable GPU monitoring and configure which cards are shown.
   </Card>
   <Card
     href="configuration/containers"
     icon={<BoxesIcon />}
     title="Containers Configuration"
   >
-    Optional per-container monitoring: CPU, memory, network, and disk usage of
-    every running Docker container.
+    Per-container CPU, memory, network and disk usage of every running Docker
+    container. On by default, needs the Docker socket.
+  </Card>
+  <Card
+    href="configuration/themes"
+    icon={<PaletteIcon />}
+    title="Themes"
+  >
+    Switch between the original glass look, an htop-style terminal theme and
+    Windows 98.
   </Card>
 </Cards>

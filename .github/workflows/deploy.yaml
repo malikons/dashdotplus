@@ -4,6 +4,17 @@ name: Deploy
 # namespace. Uses the workflow's built-in GITHUB_TOKEN, so it works on a fresh
 # fork with no secrets to configure.
 #
+# amd64 and arm64 are built natively and merged into one multi-arch manifest -
+# no QEMU emulation. Public repositories get arm64 runners for free.
+#
+# VERSIONING
+#   package.json carries the upstream release this fork is actually built on
+#   (e.g. 6.3.4). Bump it only when you merge an upstream release - it is a
+#   statement about your code, not about what exists upstream.
+#   A release is a git tag (v6.3.4-plus.1) and that tag is authoritative.
+#   Builds straight from a branch are labelled <base>-dev.<sha> so they can
+#   never be mistaken for a release.
+#
 # `docker/Dockerfile.nvidia` is kept in the repo but not built here - it needs
 # NVIDIA's base images and a GPU runner to be worth the build minutes.
 
@@ -17,12 +28,44 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+env:
+  IMAGE: ghcr.io/${{ github.repository }}
+
 jobs:
-  build:
+  version:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Work out the version to report in the UI
+        id: version
+        run: |
+          base="$(jq -r .version package.json)"
+          if [[ "$GITHUB_REF_NAME" == v* ]]; then
+            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          else
+            echo "version=${base}-dev.${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    name: build (${{ matrix.platform }})
+    runs-on: ${{ matrix.runner }}
+    needs: version
     permissions:
       contents: read
       packages: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: linux/amd64
+            runner: ubuntu-latest
+          - platform: linux/arm64
+            runner: ubuntu-24.04-arm
 
     steps:
       - uses: actions/checkout@v6
@@ -35,19 +78,48 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Work out the version to report in the UI
-        id: version
-        run: |
-          if [[ "$GITHUB_REF_NAME" == v* ]]; then
-            echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
-          else
-            echo "version=0.0.0-${GITHUB_REF_NAME//\//-}" >> "$GITHUB_OUTPUT"
-          fi
+      - name: Build and push by digest
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/Dockerfile
+          platforms: ${{ matrix.platform }}
+          target: prod
+          provenance: false
+          outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          build-args: |
+            VERSION=${{ needs.version.outputs.version }}
+            BUILDHASH=${{ github.sha }}
+          cache-from: type=gha,scope=${{ matrix.platform }}
+          cache-to: type=gha,scope=${{ matrix.platform }},mode=max
 
+      - name: Export the digest
+        run: |
+          mkdir -p /tmp/digests
+          digest="${{ steps.build.outputs.digest }}"
+          touch "/tmp/digests/${digest#sha256:}"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: digests-${{ strategy.job-index }}
+          path: /tmp/digests/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge:
+    name: merge manifests
+    runs-on: ubuntu-latest
+    needs: [version, build]
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
       - uses: docker/metadata-action@v5
         id: meta
         with:
-          images: ghcr.io/${{ github.repository }}
+          images: ${{ env.IMAGE }}
           labels: |
             org.opencontainers.image.title="dash.+"
             org.opencontainers.image.description="dash.+ - a modern server dashboard"
@@ -58,20 +130,41 @@ jobs:
           tags: |
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+            type=raw,value=latest,enable=${{ startsWith(github.ref, 'refs/tags/') }}
             type=ref,event=branch
 
-      - uses: docker/build-push-action@v6
+      - uses: docker/login-action@v3
         with:
-          context: .
-          file: docker/Dockerfile
-          platforms: linux/amd64,linux/arm64/v8
-          target: prod
-          push: true
-          build-args: |
-            VERSION=${{ steps.version.outputs.version }}
-            BUILDHASH=${{ github.sha }}
-          labels: ${{ steps.meta.outputs.labels }}
-          tags: ${{ steps.meta.outputs.tags }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/download-artifact@v8
+        with:
+          path: /tmp/digests
+          pattern: digests-*
+          merge-multiple: true
+
+      - name: Create the multi-arch manifest
+        working-directory: /tmp/digests
+        env:
+          IMAGE: ${{ env.IMAGE }}
+        run: |
+          tags=()
+          while IFS= read -r tag; do
+            tags+=(-t "$tag")
+          done < <(jq -r '.tags[]' <<< "$DOCKER_METADATA_OUTPUT_JSON")
+
+          sources=()
+          for digest_file in *; do
+            sources+=("$IMAGE@sha256:$digest_file")
+          done
+
+          docker buildx imagetools create "${tags[@]}" "${sources[@]}"
+
+      - name: Inspect what was published
+        env:
+          IMAGE: ${{ env.IMAGE }}
+        run: |
+          docker buildx imagetools inspect \
+            "$(jq -r '.tags[0]' <<< "$DOCKER_METADATA_OUTPUT_JSON")"

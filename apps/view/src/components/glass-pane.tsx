@@ -19,10 +19,11 @@ const Container = styled.div<SCProps>`
   transition: opacity 0.3 ease-in-out;
 
   display: flex;
-  backdrop-filter: blur(20px);
-  background-color: ${({ theme }) => theme.colors.surface}44;
-  border-radius: 25px;
-  border: 1px solid ${({ theme }) => theme.colors.text}33;
+  backdrop-filter: ${({ theme }) => theme.pane.backdropFilter};
+  background: ${({ theme }) => theme.pane.background};
+  border-radius: ${({ theme }) => theme.pane.radius};
+  border: ${({ theme }) => theme.pane.border};
+  box-shadow: ${({ theme }) => theme.pane.shadow};
 `;
 
 type GlassPaneProps = {

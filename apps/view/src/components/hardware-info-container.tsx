@@ -45,13 +45,13 @@ const InfoIcon = styled.div<Transient<{ color: string }>>`
   left: 20px;
 
   background-color: ${(props) => props.$color};
-  border-radius: 10px;
-  box-shadow: 13px 13px 35px 0px rgba(0, 0, 0, 0.15);
+  border-radius: ${(props) => props.theme.icon.radius};
+  box-shadow: ${(props) => props.theme.icon.shadow};
 
   transition: background-color 0.5s ease;
 
   svg {
-    color: ${(props) => props.theme.colors.text};
+    color: ${(props) => props.theme.icon.foreground};
   }
 `;
 

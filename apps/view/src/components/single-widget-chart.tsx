@@ -26,10 +26,15 @@ const Container = styled.div<{ radius?: string; gap?: string }>`
       gap: ${({ gap }) => gap ?? '12px'};
 
       > div {
-        border-radius: ${({ radius }) => radius ?? '10px'};
+        border-radius: ${({ radius, theme }) =>
+          radius ?? theme.chart.radiusInner};
+        /* the single widget stands alone on a transparent backdrop, so the
+           card keeps neither of the shadows it normally has */
+        box-shadow: unset;
 
         > div {
-          border-radius: ${({ radius }) => radius ?? '10px'};
+          border-radius: ${({ radius, theme }) =>
+            radius ?? theme.chart.radiusInner};
         }
 
         &::before {

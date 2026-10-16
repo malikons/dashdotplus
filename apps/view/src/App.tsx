@@ -1,53 +1,13 @@
 import { ConfigProvider } from 'antd';
 import { type FC, useLayoutEffect, useMemo } from 'react';
-import {
-  createGlobalStyle,
-  type DefaultTheme,
-  ThemeProvider,
-} from 'styled-components';
+import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import { useColorScheme } from 'use-color-scheme';
 import { MainWidgetContainer } from './components/main-widget-container';
 import { SingleWidgetChart } from './components/single-widget-chart';
 import { MobileContextProvider } from './services/mobile';
 import { useQuery } from './services/query-params';
 import { useSetting } from './services/settings';
-import { darkTheme, lightTheme } from './theme/theme';
-
-const getLightGradient = (theme: DefaultTheme) => `
-radial-gradient(
-  circle at 10% 10%,
-  ${theme.colors.secondary}66 10%,
-  transparent 10.2%
-),
-radial-gradient(circle at 10% 10%, #ffffff 10%, transparent 10.2%),
-radial-gradient(
-  circle at 90% 85%,
-  ${theme.colors.primary}66 20%,
-  transparent 20.2%
-),
-radial-gradient(circle at 90% 85%, white 20%, transparent 20.2%),
-linear-gradient(
-  200deg,
-  ${theme.colors.primary} 0%,
-  ${theme.colors.secondary} 60%
-)`;
-
-const getDarkGradient = (theme: DefaultTheme) => `
-radial-gradient(
-  circle at 10% 10%,
-  ${theme.colors.primary} 10%,
-  transparent 10.5%
-),
-radial-gradient(
-  circle at 110% 90%,
-  ${theme.colors.secondary} 30%,
-  transparent 30.5%
-),
-linear-gradient(
-  290deg,
-  ${theme.colors.primary} 0%,
-  ${theme.colors.secondary} 40%
-)`;
+import { getTheme, type Theme } from './theme';
 
 const GlobalStyle = createGlobalStyle<{ noBg: boolean }>`
   body {
@@ -55,18 +15,18 @@ const GlobalStyle = createGlobalStyle<{ noBg: boolean }>`
       noBg ? 'transparent' : theme.colors.background};
     height: 100vh;
     width: 100vw;
+    font-family: ${({ theme }) => theme.font};
   }
 
   #root {
     width: 100%;
     height: 100%;
+    /* #root out-specifies the stylesheet's body rule, so this is what actually
+       decides the face the page is set in */
+    font-family: ${({ theme }) => theme.font};
 
     background: ${({ theme, noBg }) =>
-      noBg
-        ? 'transparent'
-        : theme.dark
-          ? getDarkGradient(theme)
-          : getLightGradient(theme)};
+      noBg ? 'transparent' : theme.background};
 
     transition: background 0.5s ease;
     background-attachment: fixed;
@@ -78,13 +38,19 @@ const GlobalStyle = createGlobalStyle<{ noBg: boolean }>`
   }
 
   .ant-btn {
-    background: ${({ theme }) => theme.colors.background};
+    /* original deliberately tints buttons with the page behind them; the two
+       fixed themes have a flat page colour that would read as a stray block
+       against their pane, so they tint with the pane instead */
+    background: ${({ theme }) =>
+      theme.id === 'original'
+        ? theme.colors.background
+        : theme.pane.background};
     border: none;
   }
 `;
 
 const overrideColor = (
-  colors: (typeof darkTheme)['colors'],
+  colors: Theme['colors'],
   query: ReturnType<typeof useQuery>,
 ) => {
   if (query.singleWidget) {
@@ -107,24 +73,32 @@ const overrideColor = (
 export const App: FC = () => {
   const { scheme } = useColorScheme();
   const [darkMode] = useSetting('darkMode', scheme === 'dark');
+  const [themeVariant] = useSetting('themeVariant', 'original');
   const query = useQuery();
 
   const theme = useMemo(() => {
-    const baseTheme = darkMode ? darkTheme : lightTheme;
+    const baseTheme = getTheme(themeVariant, darkMode);
 
     if (query.singleWidget) {
+      // an embedded chart pins itself to `original` unless told otherwise, so
+      // the colour query params keep producing the exact look they always have
       const queryTheme = query.overrideTheme
-        ? query.overrideTheme === 'dark'
-          ? darkTheme
-          : lightTheme
+        ? getTheme('original', query.overrideTheme === 'dark')
         : baseTheme;
-      overrideColor(queryTheme.colors, query);
 
-      return queryTheme;
+      // copy before overriding - otherwise the query params would bleed into
+      // the shared theme object for every other view
+      const overridden: Theme = {
+        ...queryTheme,
+        colors: { ...queryTheme.colors },
+      };
+      overrideColor(overridden.colors, query);
+
+      return overridden;
     }
 
     return baseTheme;
-  }, [darkMode, query]);
+  }, [darkMode, themeVariant, query]);
 
   useLayoutEffect(() => {
     const meta = document.querySelector('meta[name="color-scheme"]');

@@ -16,10 +16,11 @@ const Container = styled.div<ContainerProps>`
 
   min-width: 0;
   background-color: ${({ theme }) => theme.colors.surface};
-  border-radius: ${({ $edges: [top, right, bottom, left] }) =>
-    `${top ? '25px' : '10px'} ${right ? '25px' : '10px'} ${
-      bottom ? '25px' : '10px'
-    } ${left ? '25px' : '10px'}`};
+  box-shadow: ${({ theme }) => theme.chart.bevel};
+  border-radius: ${({ theme, $edges: [top, right, bottom, left] }) =>
+    [top, right, bottom, left]
+      .map((edge) => (edge ? theme.chart.radiusOuter : theme.chart.radiusInner))
+      .join(' ')};
   z-index: auto;
 
   transition: background-color 0.3s ease;
@@ -28,13 +29,13 @@ const Container = styled.div<ContainerProps>`
 
   > div {
     overflow: hidden;
-    ${({ $edges: [top, right, bottom, left], $loading }) =>
+    ${({ theme, $edges: [top, right, bottom, left], $loading }) =>
       !$loading &&
       `
     position: absolute;
-    border-radius: ${`${top ? '25px' : '10px'} ${right ? '25px' : '10px'} ${
-      bottom ? '25px' : '10px'
-    } ${left ? '25px' : '10px'}`};
+    border-radius: ${[top, right, bottom, left]
+      .map((edge) => (edge ? theme.chart.radiusOuter : theme.chart.radiusInner))
+      .join(' ')};
     `}
   }
 
@@ -46,7 +47,7 @@ const Container = styled.div<ContainerProps>`
     left: 0;
     top: 0;
     border-radius: inherit;
-    box-shadow: -13px -13px 35px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: ${({ theme }) => theme.chart.shadow};
     z-index: -1;
   }
 `;

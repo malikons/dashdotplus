@@ -1,12 +1,14 @@
 import type { ContainerMetric } from '@dashdot/common';
 import { type Dispatch, useEffect, useState } from 'react';
 import store from 'store';
+import type { ThemeId } from '../theme';
 
 type Settings = {
   darkMode: boolean;
   multiCore: boolean;
   splitStorage: boolean;
   containersMetric: ContainerMetric;
+  themeVariant: ThemeId;
 };
 
 export const setStoreSetting = <T extends keyof Settings = keyof Settings>(
@@ -29,6 +31,7 @@ const ALL_DISPATCHES: {
   multiCore: [],
   splitStorage: [],
   containersMetric: [],
+  themeVariant: [],
 };
 
 export const useSetting = <T extends keyof Settings = keyof Settings>(

@@ -94,7 +94,9 @@ const mapLimit = async <T, R>(
     async () => {
       while (next < items.length) {
         const index = next++;
-        results[index] = await fn(items[index]);
+        // bounded by the loop condition, so the index is always in range
+        const item = items[index] as T;
+        results[index] = await fn(item);
       }
     },
   );

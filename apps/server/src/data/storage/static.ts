@@ -122,7 +122,10 @@ export const mapToStorageLayout = (
       device: hostWin32 ? (diskBlock.device ?? '') : device,
       // lsblk leaves VENDOR empty for NVMe drives, so fall back to the model
       // the kernel reports for the device
-      brand: nativeDisk.vendor || vendorFromModel(readBlockDeviceModel(device)),
+      brand:
+        nativeDisk.vendor ||
+        vendorFromModel(readBlockDeviceModel(device)) ||
+        '',
       type: getDiskType(nativeDisk.type, nativeDisk.interfaceType),
     };
 

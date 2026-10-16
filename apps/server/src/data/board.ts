@@ -50,10 +50,12 @@ export const getBoardModel = (): string | undefined =>
  * The board without its revision / form factor suffix, e.g. "Raspberry Pi 5"
  * out of "Raspberry Pi 5 Model B Rev 1.0".
  */
-export const getBoardName = (): string | undefined =>
-  getBoardModel()
-    ?.split(/\s+Model\s/i)[0]
-    .trim() || undefined;
+export const getBoardName = (): string | undefined => {
+  const model = getBoardModel();
+  if (model == null) return undefined;
+
+  return model.split(/\s+Model\s/i)[0]?.trim() || undefined;
+};
 
 // `compatible` lists the board before the SoC it is built around, most
 // specific first - e.g. ["raspberrypi,5-model-b", "brcm,bcm2712"]. The SoC is

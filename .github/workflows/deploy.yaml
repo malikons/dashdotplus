@@ -8,12 +8,13 @@ name: Deploy
 # no QEMU emulation. Public repositories get arm64 runners for free.
 #
 # VERSIONING
-#   package.json carries the upstream release this fork is actually built on
-#   (e.g. 6.3.4). Bump it only when you merge an upstream release - it is a
-#   statement about your code, not about what exists upstream.
-#   A release is a git tag (v6.3.4-plus.1) and that tag is authoritative.
-#   Builds straight from a branch are labelled <base>-dev.<sha> so they can
-#   never be mistaken for a release.
+#   dash.+ versions independently of upstream dashdot and starts at 1.0.0.
+#   package.json carries the current version; a release is a git tag (v1.0.0)
+#   and the tag is authoritative. Builds straight from a branch are labelled
+#   <version>-dev.<sha> so they can never be mistaken for a release.
+#
+#   Only push this repository's own tags - a stray tag matching v* from
+#   another lineage would publish an image wearing that version's number.
 #
 # `docker/Dockerfile.nvidia` is kept in the repo but not built here - it needs
 # NVIDIA's base images and a GPU runner to be worth the build minutes.

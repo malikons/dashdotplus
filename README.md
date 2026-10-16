@@ -67,6 +67,38 @@ install options instead (`docker-compose`, or from source), have a look at the
 To read more about configuration options, you can visit the
 [configuration options](./apps/docs/content/docs/configuration/basic.mdx).
 
+## Releases
+
+**dash.+** versions independently of upstream dashdot and starts at `1.0.0`.
+The two projects' numbers are unrelated — a dash.+ `1.2.0` says nothing about
+a dashdot `6.3.5`.
+
+| Tag | Meaning |
+| --- | --- |
+| `ghcr.io/malikons/dashdotplus:1.0.0` | A specific release |
+| `ghcr.io/malikons/dashdotplus:1.0` | The newest `1.0.x` release |
+| `ghcr.io/malikons/dashdotplus:latest` | The newest release |
+| `ghcr.io/malikons/dashdotplus:main` | The newest commit on `main` — not a release |
+
+Every image reports the version and commit it was built from in the dashboard,
+so you can always tell what you are running. Pushes to `main` are built as
+`<version>-dev.<sha>` and are never tagged `latest`, so a development build can
+never be pulled by accident.
+
+To cut a release:
+
+```bash
+# bump "version" in package.json, commit it, then:
+git tag v1.1.0
+git push origin main v1.1.0
+```
+
+> **First publish:** new GHCR packages are **private by default**, even when
+> the repository is public. After the first build, set
+> [the package's visibility to public](https://github.com/malikons/dashdotplus/pkgs/container/dashdotplus)
+> once (Package settings → Change visibility), or anonymous `docker pull` from
+> another machine will be denied.
+
 ## Containers Widget
 
 This build adds an optional widget that monitors every running Docker

@@ -12,7 +12,7 @@ docker container run -it \
   -p 80:3001 \
   -v /:/mnt/host:ro \
   --privileged \
-  malikons/dashdotplus
+  ghcr.io/malikons/dashdotplus
 ```
 
 ## Configuration
@@ -29,7 +29,13 @@ docker container run -it \
 
 ## GPU Support
 
-GPU support is available with another image tag and a slightly different command.
+GPU support needs the CUDA-based image, which this repository's CI does
+**not** publish. Build it yourself - it is identical to the standard image
+apart from its base - then run it with `--gpus all`:
+
+```bash
+docker build -f docker/Dockerfile.nvidia --build-arg VERSION=1.0.0 -t dashdotplus:nvidia .
+```
 
 ```bash
 docker container run -it \
@@ -38,5 +44,5 @@ docker container run -it \
   --privileged \
   --gpus all \
   --env DASHDOT_WIDGET_LIST="os,cpu,storage,ram,network,gpu" \
-  malikons/dashdotplus:nvidia
+  dashdotplus:nvidia
 ```

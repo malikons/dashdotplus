@@ -13,7 +13,7 @@ version: '3.5'
 
 services:
   dash:
-    image: malikons/dashdotplus:latest
+    image: ghcr.io/malikons/dashdotplus:latest
     restart: unless-stopped
     privileged: true
     ports:
@@ -36,14 +36,19 @@ services:
 
 ## GPU Support
 
-GPU support is available with another image tag and a slightly different config.
+GPU support needs the CUDA-based image, which this repository's CI does
+**not** publish. Build it yourself and reference the local tag:
+
+```bash
+docker build -f docker/Dockerfile.nvidia --build-arg VERSION=1.0.0 -t dashdotplus:nvidia .
+```
 
 ```yaml
 version: '3.5'
 
 services:
   dash:
-    image: malikons/dashdotplus:nvidia
+    image: dashdotplus:nvidia
     restart: unless-stopped
     privileged: true
     deploy:

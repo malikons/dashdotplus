@@ -1,0 +1,56 @@
+---
+title: Themes
+tags:
+  - Configuration
+  - Styles
+---
+
+dash.+ ships three dashboard themes. Pick one from the dropdown at the top
+right of the **OS** widget - the change is applied immediately, with no reload.
+
+| Theme | Look |
+| --- | --- |
+| **Original** | The glassmorphism design inherited from dashdot. Follows the Dark Mode toggle, and is the default. |
+| **htop** | Fixed dark. Monospace type, square corners and green-on-black accents, modelled on the classic process viewer. |
+| **Windows 98** | Fixed light. Teal desktop, grey raised and sunken bevels, and the classic navy selection colour. |
+
+## Where the choice is stored
+
+The theme is a **browser setting, not a server setting**. It is written to
+`localStorage` under the key `themeVariant`, which means:
+
+- every browser remembers its own choice, independently
+- it survives restarts and upgrades, but is not shared between machines
+- a fresh browser always starts on **Original**
+
+There is no environment variable for it, so nothing in `docker-compose.yml`
+needs to change and no server restart is involved.
+
+## Dark Mode
+
+**Original** has both a light and a dark variant, so the Dark Mode toggle in
+the OS widget stays visible and keeps working as it does upstream.
+
+The other two themes are fixed-palette - htop is always dark, Windows 98 is
+always light - so the Dark Mode toggle is hidden while one of them is active.
+Switching back to Original brings the toggle back.
+
+<Callout title="Embedded graphs are separate" type="info">
+The single-widget view used by integrations such as Heimdall and Homarr
+(`?graph=cpu`) has its own `theme=light|dark` query parameter, inherited from
+upstream. It styles that embedded graph only and has no effect on the
+dashboard theme.
+</Callout>
+
+## How a theme is defined
+
+A theme describes a widget's *material*, not only its colours: pane radius,
+background, border, backdrop blur and shadow; chart corner radii, bevel and
+shadow; and icon radius, shadow and foreground.
+
+That is why a new theme is a plain object in
+[`apps/view/src/theme/palettes.ts`](https://github.com/malikons/dashdotplus/blob/main/apps/view/src/theme/palettes.ts)
+rather than a change to any widget - no widget component has to know the theme
+exists. The page background and font family come from the same object, which is
+how htop can move the entire dashboard onto a monospace face while leaving the
+widgets untouched.

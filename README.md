@@ -101,9 +101,9 @@ git push origin main v1.1.0
 
 ## Containers Widget
 
-This build adds an optional widget that monitors every running Docker
-container — CPU, memory, network and disk I/O — in the same style as the
-existing host-level widgets.
+This build adds a widget that monitors every running Docker container — CPU,
+memory, network and disk I/O — in the same style as the existing host-level
+widgets.
 
 ### Requirements
 

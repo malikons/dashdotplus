@@ -94,6 +94,7 @@ const overrideColor = (
       colors.ramPrimary = `#${query.overrideThemeColor}`;
       colors.networkPrimary = `#${query.overrideThemeColor}`;
       colors.gpuPrimary = `#${query.overrideThemeColor}`;
+      colors.containersPrimary = `#${query.overrideThemeColor}`;
       colors.primary = `#${query.overrideThemeColor}`;
     }
 

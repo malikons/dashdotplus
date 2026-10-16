@@ -1,4 +1,5 @@
 import {
+  type ContainersLoad,
   type CpuLoad,
   type GpuLoad,
   type NetworkLoad,
@@ -27,6 +28,7 @@ export const usePageData = () => {
   const [networkLoad, setNetworkLoad] = useState<NetworkLoad[]>([]);
   const [gpuLoad, setGpuLoad] = useState<GpuLoad[]>([]);
   const [storageLoad, setStorageLoad] = useState<StorageLoad>();
+  const [containersLoad, setContainersLoad] = useState<ContainersLoad[]>([]);
 
   const config = serverInfo?.config;
 
@@ -98,6 +100,16 @@ export const usePageData = () => {
       socket.on('storage-load', (data) => {
         setStorageLoad(data);
       });
+
+      socket.on('containers-load', (data: ContainersLoad) => {
+        setContainersLoad((oldData) => {
+          if (oldData.length >= (config.containers_shown_datapoints ?? 0)) {
+            return [...oldData.slice(1), data];
+          } else {
+            return [...oldData, data];
+          }
+        });
+      });
     }
 
     return () => {
@@ -127,5 +139,6 @@ export const usePageData = () => {
     networkLoad,
     gpuLoad,
     storageLoad,
+    containersLoad,
   };
 };

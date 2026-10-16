@@ -7,6 +7,7 @@ import { default as styled } from 'styled-components';
 import { GlassPane } from '../components/glass-pane';
 import { useIsMobile } from '../services/mobile';
 import { usePageData } from '../services/page-data';
+import { ContainersWidget } from '../widgets/containers';
 import { CpuWidget } from '../widgets/cpu';
 import { ErrorWidget } from '../widgets/error';
 import { GpuWidget } from '../widgets/gpu';
@@ -79,6 +80,7 @@ export const MainWidgetContainer: FC = () => {
     ramLoad,
     networkLoad,
     gpuLoad,
+    containersLoad,
   } = usePageData();
 
   const osData = serverInfo?.os;
@@ -87,6 +89,10 @@ export const MainWidgetContainer: FC = () => {
   const networkData = serverInfo?.network;
   const storageData = serverInfo?.storage;
   const gpuData = serverInfo?.gpu;
+  const containersData = serverInfo?.containers ?? {
+    available: false,
+    hostRam: 0,
+  };
 
   useEffect(() => {
     if (config?.page_title) {
@@ -157,6 +163,13 @@ export const MainWidgetContainer: FC = () => {
       Widget: GpuWidget,
       data: gpuData,
       load: gpuLoad,
+    },
+    containers: {
+      grow: config.containers_widget_grow,
+      minWidth: config.containers_widget_min_width,
+      Widget: ContainersWidget,
+      data: containersData,
+      load: containersLoad,
     },
   };
 

@@ -15,6 +15,7 @@ type Theme = {
     storagePrimary: string;
     networkPrimary: string;
     gpuPrimary: string;
+    containersPrimary: string;
   };
 };
 
@@ -35,6 +36,9 @@ const lightTheme: Theme = {
     storagePrimary: '#49e37a',
     networkPrimary: '#ffd745',
     gpuPrimary: '#c97bff',
+    // deliberately warm: every other widget colour is cool or already taken,
+    // so this stays distinguishable at a glance
+    containersPrimary: '#ff8f3f',
   },
 };
 
@@ -55,6 +59,7 @@ const darkTheme: Theme = {
     storagePrimary: '#22b352',
     networkPrimary: '#e9c235',
     gpuPrimary: '#a135eb',
+    containersPrimary: '#e0701f',
   },
 };
 

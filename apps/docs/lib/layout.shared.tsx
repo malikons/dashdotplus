@@ -15,11 +15,11 @@ export function baseOptions(): BaseLayoutProps {
         <div className="flex items-center gap-4">
           <Image
             src="/img/logo512.png"
-            alt="Dashdot Logo"
+            alt="dash.+ Logo"
             width={20}
             height={20}
           />
-          <span>Dash.</span>
+          <span>Dash.+</span>
         </div>
       ),
     },

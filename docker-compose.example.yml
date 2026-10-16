@@ -25,7 +25,7 @@ services:
 
       # --- containers widget (all optional, defaults shown) ---
       # DASHDOT_CONTAINERS_DEFAULT_METRIC: 'cpu'   # cpu | mem | net | disk
-      # DASHDOT_CONTAINERS_EXCLUDE: 'dashdot'      # hide by name or image substring
+      # DASHDOT_CONTAINERS_EXCLUDE: 'dashdotplus'  # hide by name or image substring
       # DASHDOT_CONTAINERS_WIDGET_ITEMS_PER_PAGE: '4'
       # DASHDOT_CONTAINERS_WIDGET_GROW: '6'
       # DASHDOT_CONTAINERS_WIDGET_MIN_WIDTH: '700'

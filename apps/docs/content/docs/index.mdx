@@ -3,22 +3,28 @@ title: Documentation
 description: The official documentation for dash.+
 ---
 
-## What is Dash.?
+## What is dash.+?
 
-At its core, Dashdot is a monitoring tool that gathers system information and presents
+At its core, dash.+ is a monitoring tool that gathers system information and presents
 it through a beautiful, reactive web interface.
 Whether you are running a small Raspberry Pi homelab or a beefy dedicated root server,
-Dashdot gives you an instant overview of:
+dash.+ gives you an instant overview of:
 
 * **CPU:** Usage, model, and core-specific performance.
 * **Memory:** Real-time RAM utilization.
 * **Storage:** Disk space across all mounted drives.
 * **Network:** Up/Down speeds and total data transferred.
 * **GPU:** Support for monitoring modern graphics cards (only NVIDIA via Docker).
+* **Containers:** Per-container CPU, memory, network and disk I/O for every
+  running Docker container, shown alongside the host-level widgets.
+
+The dashboard also ships three switchable themes - the original glass look, an
+htop-style terminal theme and Windows 98 - available from a dropdown in the OS
+widget.
 
 ## Configuration
 
-Dashdot is designed to be highly plug-and-play, but it offers extensive customization via **Environment Variables**.
+dash.+ is designed to be highly plug-and-play, but it offers extensive customization via **Environment Variables**.
 These allow you to tweak the behavior and appearance without touching the source code.
 
 You can find more details on how to set these variables in our [Configuration Section](docs/configuration).

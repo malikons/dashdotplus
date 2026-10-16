@@ -114,6 +114,20 @@ export const App: FC = () => {
           token: {
             colorPrimary: theme.colors.primary,
             colorPrimaryHover: theme.colors.primary,
+            // antd components reset to their own typeface, which would put the
+            // dropdown and tooltips in a different face from the widget they
+            // sit in
+            fontFamily: theme.font,
+            // `original` is built around antd's stock white control surface, so
+            // it must not be touched - the other two themes borrow their own
+            // surface and text instead, or the controls read as light-on-light
+            ...(theme.id === 'original'
+              ? {}
+              : {
+                  colorBgContainer: theme.colors.surface,
+                  colorBgElevated: theme.colors.surface,
+                  colorText: theme.colors.text,
+                }),
           },
         }}
       >

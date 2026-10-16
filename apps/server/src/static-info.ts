@@ -3,6 +3,7 @@ import type { HardwareInfo, ServerInfo } from '@dashdot/common';
 import { BehaviorSubject, map, type Observable } from 'rxjs';
 import * as si from 'systeminformation';
 import { CONFIG } from './config';
+import getContainersInfo from './data/containers';
 import getCpuInfo from './data/cpu';
 import getGpuInfo from './data/gpu';
 import getNetworkInfo from './data/network';
@@ -46,6 +47,10 @@ const STATIC_INFO = new BehaviorSubject<HardwareInfo>({
   gpu: {
     layout: [],
   },
+  containers: {
+    available: false,
+    hostRam: 0,
+  },
 });
 
 const promIf = <T>(
@@ -56,7 +61,7 @@ const promIf = <T>(
 };
 
 export const loadInfo = <
-  T extends 'os' | 'cpu' | 'storage' | 'ram' | 'network' | 'gpu',
+  T extends 'os' | 'cpu' | 'storage' | 'ram' | 'network' | 'gpu' | 'containers',
   B extends boolean,
 >(
   info: T,
@@ -85,6 +90,16 @@ export const loadStaticServerInfo = async (): Promise<void> => {
   await loadInfo('storage', getStorageInfo.static, false);
   await loadInfo('network', getNetworkInfo.static, true);
   await loadInfo('gpu', getGpuInfo.static, false);
+  // runs after ram so the widget can normalise container memory against the
+  // host total that is actually being displayed
+  await loadInfo(
+    'containers',
+    () =>
+      getContainersInfo.static(
+        CONFIG.override.ram_size ?? STATIC_INFO.getValue().ram.size,
+      ),
+    false,
+  );
 
   console.log(
     'Static Server Info:',

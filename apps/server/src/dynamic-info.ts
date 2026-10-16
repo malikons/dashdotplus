@@ -16,6 +16,7 @@ import {
   type Unsubscribable,
 } from 'rxjs';
 import { CONFIG } from './config';
+import getContainersInfo from './data/containers';
 import getCpuInfo from './data/cpu';
 import getGpuInfo from './data/gpu';
 import getNetworkInfo from './data/network';
@@ -172,6 +173,15 @@ export const getDynamicServerInfo = () => {
     getGpuInfo.dynamic,
   );
 
+  const containersObs = new LazyObservable(
+    'Containers',
+    CONFIG.widget_list.includes('containers'),
+    runInBackground,
+    CONFIG.containers_shown_datapoints,
+    CONFIG.containers_poll_interval,
+    getContainersInfo.dynamic,
+  );
+
   let speedTestObs = new Observable();
 
   if (CONFIG.widget_list.includes('network')) {
@@ -198,6 +208,7 @@ export const getDynamicServerInfo = () => {
     storage: storageObs,
     network: networkObs,
     gpu: gpuObs,
+    containers: containersObs,
     speedTest: speedTestObs,
   };
 };

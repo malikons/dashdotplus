@@ -118,6 +118,9 @@ server.listen(CONFIG.port, async () => {
     router.get('/load/gpu', async (_, res) => {
       res.send(await obs.gpu.getCurrentValue());
     });
+    router.get('/load/containers', async (_, res) => {
+      res.send(await obs.containers.getCurrentValue());
+    });
   }
 
   // Send current system status
@@ -157,6 +160,12 @@ server.listen(CONFIG.port, async () => {
     subscriptions.push(
       obs.gpu.subscribe(async (gpu) => {
         socket.emit('gpu-load', gpu);
+      }),
+    );
+
+    subscriptions.push(
+      obs.containers.subscribe(async (containers) => {
+        socket.emit('containers-load', containers);
       }),
     );
     socket.on('disconnect', () => {

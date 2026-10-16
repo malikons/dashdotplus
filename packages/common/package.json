@@ -1,5 +1,5 @@
 {
-  "name": "@dashdot/common",
+  "name": "@dashdotplus/common",
   "version": "0.0.0",
   "type": "module",
   "private": true,
@@ -7,6 +7,6 @@
     ".": "./src/index.ts"
   },
   "devDependencies": {
-    "@dashdot/typescript-config": "*"
+    "@dashdotplus/typescript-config": "*"
   }
 }

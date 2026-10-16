@@ -1,5 +1,5 @@
 {
-  "name": "@dashdot/server",
+  "name": "@dashdotplus/server",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,8 +11,8 @@
     "test": "NODE_OPTIONS=--experimental-vm-modules jest"
   },
   "dependencies": {
-    "@dashdot/common": "*",
-    "@dashdot/typescript-config": "*",
+    "@dashdotplus/common": "*",
+    "@dashdotplus/typescript-config": "*",
     "compression": "1.8.1",
     "cors": "2.8.6",
     "cronstrue": "3.13.0",

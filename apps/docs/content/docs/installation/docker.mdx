@@ -12,7 +12,7 @@ docker container run -it \
   -p 80:3001 \
   -v /:/mnt/host:ro \
   --privileged \
-  mauricenino/dashdot
+  malikons/dashdotplus
 ```
 
 ## Configuration
@@ -38,5 +38,5 @@ docker container run -it \
   --privileged \
   --gpus all \
   --env DASHDOT_WIDGET_LIST="os,cpu,storage,ram,network,gpu" \
-  mauricenino/dashdot:nvidia
+  malikons/dashdotplus:nvidia
 ```

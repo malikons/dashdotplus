@@ -7,9 +7,7 @@ export default function Layout({ children }: LayoutProps<'/'>) {
       {...baseOptions()}
       links={[
         { url: '/docs', text: 'Documentation' },
-        { url: `https://discord.gg/3teHFBNQ9W`, text: 'Discord' },
-        { url: 'https://dash.mauz.dev', text: 'Demo' },
-        { url: 'https://ko-fi.com/mauricenino', text: 'Ko-Fi' },
+        { url: 'https://github.com/malikons/dashdotplus', text: 'GitHub' },
       ]}
     >
       {children}

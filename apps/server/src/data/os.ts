@@ -1,6 +1,6 @@
 import { exec } from 'node:child_process';
 import { promisify } from 'node:util';
-import type { OsInfo } from '@dashdot/common';
+import type { OsInfo } from '@dashdotplus/common';
 import * as si from 'systeminformation';
 import { refreshHostOsRelease } from '../utils';
 

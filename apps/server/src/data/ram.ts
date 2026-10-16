@@ -1,4 +1,4 @@
-import type { RamInfo, RamLoad } from '@dashdot/common';
+import type { RamInfo, RamLoad } from '@dashdotplus/common';
 import * as si from 'systeminformation';
 import { getBoardName } from './board';
 

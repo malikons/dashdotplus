@@ -1,4 +1,4 @@
-import type { Config } from '@dashdot/common';
+import type { Config } from '@dashdotplus/common';
 
 const numNull = (val: string | undefined): number | undefined => {
   if (val === undefined || val === '') {
@@ -45,7 +45,7 @@ export const CONFIG: Config = {
   show_dash_version: (penv('SHOW_DASH_VERSION') as any) ?? 'icon_hover',
   show_host: penv('SHOW_HOST') === 'true',
   custom_host: penv('CUSTOM_HOST'),
-  page_title: penv('PAGE_TITLE') ?? 'dash.',
+  page_title: penv('PAGE_TITLE') ?? 'dash.+',
   use_imperial: penv('USE_IMPERIAL') === 'true',
   network_speed_as_bytes: penv('NETWORK_SPEED_AS_BYTES') === 'true',
   always_show_percentages: penv('ALWAYS_SHOW_PERCENTAGES') === 'true',

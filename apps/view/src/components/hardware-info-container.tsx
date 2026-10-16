@@ -1,4 +1,4 @@
-import type { Transient } from '@dashdot/common';
+import type { Transient } from '@dashdotplus/common';
 import type { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

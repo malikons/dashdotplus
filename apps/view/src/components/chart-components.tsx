@@ -1,4 +1,4 @@
-import { clamp } from '@dashdot/common';
+import { clamp } from '@dashdotplus/common';
 import { motion } from 'framer-motion';
 import { type FC, useMemo, useRef, useState } from 'react';
 import {

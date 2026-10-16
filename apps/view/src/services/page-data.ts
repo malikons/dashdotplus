@@ -7,7 +7,7 @@ import {
   type ServerInfo,
   type StorageLoad,
   urlJoin,
-} from '@dashdot/common';
+} from '@dashdotplus/common';
 import { useEffect, useState } from 'react';
 import { io, type Socket } from 'socket.io-client';
 import { environment } from '../environment';

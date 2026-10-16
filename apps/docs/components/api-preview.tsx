@@ -76,7 +76,7 @@ export const ApiPreview = () => {
   }, []);
 
   const [protocol, setProtocol] = useState('https');
-  const [url, setUrl] = useState('dash.mauz.dev');
+  const [url, setUrl] = useState('localhost:80');
 
   const baseUrl = `${protocol}://${url}`;
   const info = getDataFromUrl(`${baseUrl}/info`);
@@ -91,7 +91,7 @@ export const ApiPreview = () => {
     return !data.loading
       ? !data.error
         ? JSON.stringify(data.data, null, 2)
-        : data.error.message ?? 'Error'
+        : (data.error.message ?? 'Error')
       : 'Loading ...';
   };
 
@@ -124,7 +124,7 @@ export const ApiPreview = () => {
                   id="url"
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
-                  placeholder="dash.mauz.dev"
+                  placeholder="localhost:80"
                   className="flex-1"
                 />
               </div>

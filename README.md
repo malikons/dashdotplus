@@ -1,91 +1,71 @@
-<!-- markdownlint-disable -->
-<h1>
-  <img src=".github/images/banner_muted.png" alt="dash. - a modern server dashboard">
-</h1>
+<h1 align="center">dash.+</h1>
 
 <p align="center">
-  <a href="https://github.com/MauriceNino/dashdot/actions/workflows/deploy.yaml?branch=main" target="_blank">
-    <img title="GitHub Actions" src="https://github.com/MauriceNino/dashdot/actions/workflows/deploy.yaml/badge.svg?branch=main">
-  </a>
-
-  <a href="https://discord.gg/3teHFBNQ9W" target="_blank">
-    <img title="Discord" src="https://discord.com/api/guilds/986251291577688064/widget.png?style=shield">
-  </a>
-</p>
-<p align="center">
-  <i>Feel free to join the <b>Discord</b> and <b>star the repo</b> if you like the project!</i>
-</p>
-
-<br/>
-
-<p align="center">
-  <b>dash.</b> (or <b>dashdot</b>) is a modern server dashboard,
+  <b>dash.+</b> (<b>dashdotplus</b>) is a modern server dashboard,
   running on the latest tech, designed with glassmorphism in mind.
   It is intended to be used for smaller VPS and private servers.
 </p>
-<br />
+
 <p align="center">
-  <a href="https://dash.mauz.dev" target="_blank">Live Demo</a>
- |
-  <a href="https://hub.docker.com/r/mauricenino/dashdot" target="_blank">Docker Image</a>
+  A feature-focused fork of
+  <a href="https://github.com/MauriceNino/dashdot" target="_blank">dashdot</a>
+  by Maurice el-Banna.
 </p>
 
-#
+<p align="center">
+  <a href="https://github.com/malikons/dashdotplus/actions/workflows/deploy.yaml?branch=main" target="_blank">
+    <img title="GitHub Actions" src="https://github.com/malikons/dashdotplus/actions/workflows/deploy.yaml/badge.svg?branch=main">
+  </a>
+</p>
 
-<a href="https://ko-fi.com/mauricenino" target="_blank">
-  <img 
-    align="right"
-    width="160"
-    style="padding-left: 20px; padding-bottom: 10px"
-    alt="Consider sponsoring the development of this project"
-    src="https://cdn.ko-fi.com/cdn/kofi2.png?v=3"
-  />
-</a>
+## What this fork adds
 
-<!-- markdownlint-enable -->
+| Feature | Summary |
+| --- | --- |
+| [Containers widget](#containers-widget) | Per-container CPU, memory, network and disk I/O. Opt-in, disabled by default. |
+| [Board detection](#improved-board-detection) | Real hardware identity on Raspberry Pi and other SBCs — no `DASHDOT_OVERRIDE_*` needed. |
+| [Themes](#themes) | Three dashboard themes — the original glass look, an htop-style terminal look, and Windows 98 — switchable at runtime. |
 
-**dash.** is a open-source project, so any contribution is highly appreciated.
-If you are interested in further developing this project, have a look at the
-[Contributing.md](./.github/CONTRIBUTING.md).
-
-In case you want to financially support this project, you can visit my
-[GitHub Sponsors](https://github.com/sponsors/MauriceNino), or my [Ko-Fi](https://ko-fi.com/mauricenino).
+Everything else stays upstream-compatible: the same widgets, the same
+`DASHDOT_*` environment configuration, and the same default appearance.
 
 ## Preview
 
-<!-- markdownlint-disable -->
-
-| Dark-Mode                                                                                    | Light-Mode                                                                                     |
-| -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| <img src="apps/docs/static/img/screenshot_darkmode.png" alt="Screenshot of the dark-mode" /> | <img src="apps/docs/static/img/screenshot_lightmode.png" alt="Screenshot of the light-mode" /> |
-
-<!-- markdownlint-enable -->
+| Dark-Mode | Light-Mode |
+| --- | --- |
+| <img src="apps/docs/public/img/screenshot_darkmode.png" alt="Screenshot of the dark-mode" /> | <img src="apps/docs/public/img/screenshot_lightmode.png" alt="Screenshot of the light-mode" /> |
 
 ## Documentation
 
-- [Installation Options](https://getdashdot.com/docs/installation/docker)
-- [Configuration Options](https://getdashdot.com/docs/configuration/basic)
+The full documentation lives in this repository under
+[`apps/docs`](./apps/docs):
+
+- [Installation Options](./apps/docs/content/docs/installation/docker.mdx)
+- [Configuration Options](./apps/docs/content/docs/configuration/basic.mdx)
+- [Containers Configuration](./apps/docs/content/docs/configuration/containers.mdx)
 - [Contributing](./.github/CONTRIBUTING.md)
-- [Changelog](./.github/CHANGELOG.md)
+- [Changelog (upstream)](./.github/CHANGELOG.md)
 
 ## Quick Install (Docker)
 
-Images are hosted on [DockerHub](https://hub.docker.com/r/mauricenino/dashdot),
-and are available for both AMD64 and ARM devices.
+Images are published by the [Deploy](https://github.com/malikons/dashdotplus/actions/workflows/deploy.yaml)
+workflow to this repository's GitHub Container Registry, for both AMD64 and
+ARM devices:
 
 ```bash
 docker container run -it \
   -p 80:3001 \
   -v /:/mnt/host:ro \
   --privileged \
-  mauricenino/dashdot
+  ghcr.io/malikons/dashdotplus
 ```
 
 To get more information on why which flag is needed, or if you want to use other
 install options instead (`docker-compose`, or from source), have a look at the
-[installation options](https://getdashdot.com/docs/installation/docker).
+[installation options](./apps/docs/content/docs/installation/docker.mdx).
 
-To read more about configuration options, you can visit the [configuration options](https://getdashdot.com/docs/configuration).
+To read more about configuration options, you can visit the
+[configuration options](./apps/docs/content/docs/configuration/basic.mdx).
 
 ## Containers Widget
 
@@ -101,7 +81,7 @@ The widget is **disabled by default**. It only appears once you opt in via
 ```yaml
 services:
   dash:
-    image: mauricenino/dashdot
+    image: ghcr.io/malikons/dashdotplus
     restart: unless-stopped
     privileged: true
     ports:
@@ -142,13 +122,18 @@ Reported metrics:
 - Containers are listed alphabetically and paged, so charts do not reshuffle
   between polls
 
+Cost of running it (measured on a 4-core Raspberry Pi 5 against 14 containers
+at a 5s interval): about **0.17 % of one core**, with no measurable difference
+in resident memory.
+
 Full option reference: [Containers Configuration](./apps/docs/content/docs/configuration/containers.mdx)
 
 ## Improved Board Detection
 
 Upstream derives hardware identity from DMI and SPD, both of which misreport on
-single board computers. This fork reads the device tree instead, so a Raspberry
-Pi now reports real values with **no `DASHDOT_OVERRIDE_*` needed**:
+single board computers. This fork reads the device tree
+(`/sys/firmware/devicetree/base`), so a Raspberry Pi now reports real values
+with **no `DASHDOT_OVERRIDE_*` needed**:
 
 | Field | Upstream | This fork |
 | --- | --- | --- |
@@ -156,19 +141,43 @@ Pi now reports real values with **no `DASHDOT_OVERRIDE_*` needed**:
 | Memory brand | unset — soldered LPDDR has no SPD | `Raspberry Pi 5 (onboard)` — from the board model |
 | Storage brand | empty on NVMe — drives expose no `VENDOR` | `SK hynix` — derived from the drive model |
 
-The existing `DASHDOT_OVERRIDE_*` variables still take precedence, so this only
-fills in values that would otherwise be wrong or missing. x86 hosts are
-unaffected: they have no device tree, so every lookup falls through to
-`systeminformation` unchanged.
+The device tree only exists on ARM, so x86 hosts are unaffected: every lookup
+falls through to `systeminformation` exactly as before. The existing
+`DASHDOT_OVERRIDE_*` variables still take precedence, so this only fills in
+values that would otherwise be wrong or missing.
 
-## Developer Notice
+## Themes
 
-> Note: Due to the consistently growing size of the `.git` folder, which was
-> caused by a combination of [yarn offline mirror](https://yarnpkg.com/features/caching#offline-mirror)
-> and [dependabot](https://docs.github.com/en/code-security/getting-started/dependabot-quickstart-guide)
-> changes, I had to rewrite the entire history and remove the `.yarn/cache` folder.
-> You can read more about this problem [here](https://github.com/yarnpkg/berry/issues/180)
->
-> This resulted in a loss of all forks, which were created before the 18th of
-> March 2025. If you are one of the affected forks, I am sorry for the inconvenience.
-> Please consider re-forking the repository.
+The dashboard ships with three themes, chosen from a dropdown in the top-right
+corner of the OS widget:
+
+| Theme | Look |
+| --- | --- |
+| **Original** | Upstream's glassmorphism design. Respects the Dark Mode toggle and is the default, so an untouched install looks identical to dashdot. |
+| **htop** | Fixed dark. Monospace type, square corners, green-on-black accents — modelled on the classic process viewer. |
+| **Windows 98** | Fixed light. Teal desktop, grey raised/sunken bevels and the classic navy selection colour. |
+
+Because the two alternate themes are fixed-palette, the Dark Mode toggle hides
+while one of them is active. The choice is stored per browser in
+`localStorage`, so it does not need a server restart or a config change — and
+setting `DASHDOT_THEME` is not required for the original look.
+
+Themes describe the *material* of a widget as well as its colours (pane radius
+and background, chart rounding and bevel, icon styling), so new themes can be
+added without touching individual widget components.
+
+## Contributing
+
+**dash.+** is an open-source project, so any contribution is highly
+appreciated. If you are interested in further developing this project, have a
+look at [Contributing.md](./.github/CONTRIBUTING.md).
+
+## License and Attribution
+
+This project is licensed under the [MIT License](./LICENSE.md).
+
+It is a fork of [dashdot](https://github.com/MauriceNino/dashdot), created by
+Maurice el-Banna, also MIT-licensed. The original copyright notice is retained
+in `LICENSE.md` as that license requires, and substantial portions of this
+codebase originate from that project. If you are looking for the original, it
+is at [github.com/MauriceNino/dashdot](https://github.com/MauriceNino/dashdot).

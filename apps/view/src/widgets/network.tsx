@@ -1,4 +1,4 @@
-import type { Config, NetworkInfo, NetworkLoad } from '@dashdot/common';
+import type { Config, NetworkInfo, NetworkLoad } from '@dashdotplus/common';
 import { faNetworkWired } from '@fortawesome/free-solid-svg-icons';
 import type { FC } from 'react';
 import { YAxis } from 'recharts';

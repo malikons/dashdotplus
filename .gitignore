@@ -49,3 +49,12 @@ Thumbs.db
 dist
 build
 .docusaurus
+*.tsbuildinfo
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Local-only overrides
+*.local

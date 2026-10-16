@@ -1,5 +1,5 @@
 import { inspect } from 'node:util';
-import type { HardwareInfo, ServerInfo } from '@dashdot/common';
+import type { HardwareInfo, ServerInfo } from '@dashdotplus/common';
 import { BehaviorSubject, map, type Observable } from 'rxjs';
 import * as si from 'systeminformation';
 import { CONFIG } from './config';

@@ -1,4 +1,4 @@
-import { RaidType, type StorageInfo, sumUp } from '@dashdot/common';
+import { RaidType, type StorageInfo, sumUp } from '@dashdotplus/common';
 import * as si from 'systeminformation';
 import { CONFIG } from '../../config';
 import { PLATFORM_IS_WINDOWS } from '../../utils';

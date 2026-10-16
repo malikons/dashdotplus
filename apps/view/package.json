@@ -1,5 +1,5 @@
 {
-  "name": "@dashdot/view",
+  "name": "@dashdotplus/view",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build"
   },
   "dependencies": {
-    "@dashdot/common": "*",
+    "@dashdotplus/common": "*",
     "@emotion/memoize": "0.9.0",
     "@emotion/react": "11.14.0",
     "@fortawesome/fontawesome-svg-core": "7.1.0",

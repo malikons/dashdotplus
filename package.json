@@ -1,14 +1,14 @@
 {
-  "name": "dashdot",
+  "name": "dashdotplus",
   "version": "0.0.0",
-  "description": "dash. - a modern server dashboard",
+  "description": "dash.+ - a modern server dashboard",
   "license": "MIT",
   "private": true,
-  "repository": "https://github.com/MauriceNino/dashdot",
-  "homepage": "https://getdashdot.com",
-  "author": "MauriceNino <mauriceprivat98@gmail.com>",
+  "repository": "https://github.com/malikons/dashdotplus",
+  "homepage": "https://github.com/malikons/dashdotplus",
+  "author": "Shiraz Malik <shirazsmalik@gmail.com>",
   "bugs": {
-    "url": "https://github.com/MauriceNino/dashdot/issues"
+    "url": "https://github.com/malikons/dashdotplus/issues"
   },
   "keywords": [
     "monitoring",
@@ -17,10 +17,10 @@
     "glassmorphism"
   ],
   "scripts": {
-    "start": "cross-env NODE_ENV=production yarn workspace @dashdot/server start",
+    "start": "cross-env NODE_ENV=production yarn workspace @dashdotplus/server start",
     "cli": "node apps/cli/dist/index.js",
     "build": "turbo run build",
-    "build:prod": "cross-env NODE_ENV=production turbo run build --filter=@dashdot/view --filter=@dashdot/server --filter=@dashdot/cli",
+    "build:prod": "cross-env NODE_ENV=production turbo run build --filter=@dashdotplus/view --filter=@dashdotplus/server --filter=@dashdotplus/cli",
     "dev": "turbo run dev",
     "dev:docker": "docker compose -p dashdot_dev -f ./docker/docker-compose.dev.yml up --build --remove-orphans",
     "dev:docker:proxy": "docker compose -p dashdot_dev -f ./docker/docker-compose.proxy.yml up --build --remove-orphans",
@@ -102,7 +102,7 @@
       [
         "@semantic-release/github",
         {
-          "successComment": ":tada: This issue has been resolved in version ${nextRelease.version}\n\nPlease check the [changelog](https://github.com/MauriceNino/dashdot/blob/main/.github/CHANGELOG.md) for more details.",
+          "successComment": ":tada: This issue has been resolved in version ${nextRelease.version}\n\nPlease check the [changelog](https://github.com/malikons/dashdotplus/blob/main/.github/CHANGELOG.md) for more details.",
           "successCommentCondition": "<% return issue.user.type !== 'Bot'; %>",
           "failComment": false,
           "failTitle": false,

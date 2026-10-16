@@ -1,4 +1,4 @@
-import type { Config, RamInfo, RamLoad } from '@dashdot/common';
+import type { Config, RamInfo, RamLoad } from '@dashdotplus/common';
 import { faMemory } from '@fortawesome/free-solid-svg-icons';
 import type { FC } from 'react';
 import { Tooltip, YAxis } from 'recharts';

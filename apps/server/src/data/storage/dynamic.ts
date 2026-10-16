@@ -1,4 +1,4 @@
-import { type StorageInfo, type StorageLoad, sumUp } from '@dashdot/common';
+import { type StorageInfo, type StorageLoad, sumUp } from '@dashdotplus/common';
 import * as si from 'systeminformation';
 import { CONFIG } from '../../config';
 import { getStaticServerInfo } from '../../static-info';

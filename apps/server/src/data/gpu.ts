@@ -1,4 +1,4 @@
-import type { GpuInfo, GpuLoad } from '@dashdot/common';
+import type { GpuInfo, GpuLoad } from '@dashdotplus/common';
 import * as si from 'systeminformation';
 import { CONFIG } from '../config';
 

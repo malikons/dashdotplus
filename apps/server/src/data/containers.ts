@@ -3,7 +3,7 @@ import type {
   ContainerStat,
   ContainersInfo,
   ContainersLoad,
-} from '@dashdot/common';
+} from '@dashdotplus/common';
 import * as si from 'systeminformation';
 import { CONFIG } from '../config';
 

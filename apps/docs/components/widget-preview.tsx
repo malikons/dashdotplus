@@ -16,7 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from './ui/input-group';
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from './ui/input-group';
 
 const getPart = (
   name: string,
@@ -37,7 +42,7 @@ export const WidgetPreview = () => {
   }, []);
 
   const [protocol, setProtocol] = useState('https');
-  const [url, setUrl] = useState('dash.mauz.dev');
+  const [url, setUrl] = useState('localhost:80');
   const [widget, setWidget] = useState('cpu');
   const [multiView, setMultiView] = useState(false);
   const [filterGraph, setFilterGraph] = useState('both');
@@ -317,7 +322,9 @@ export const WidgetPreview = () => {
                     type="number"
                     value={textSize ?? ''}
                     onChange={(e) =>
-                      setTextSize(e.target.value ? Number(e.target.value) : null)
+                      setTextSize(
+                        e.target.value ? Number(e.target.value) : null,
+                      )
                     }
                     placeholder="16"
                     className="w-full"
@@ -357,7 +364,7 @@ export const WidgetPreview = () => {
 
           <div className="flex justify-center">
             <iframe
-              className='h-75 w-full'
+              className="h-75 w-full"
               title="Widget Preview"
               src={finalUrl}
               style={{

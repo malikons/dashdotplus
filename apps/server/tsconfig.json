@@ -1,5 +1,5 @@
 {
-  "extends": "@dashdot/typescript-config/node.json",
+  "extends": "@dashdotplus/typescript-config/node.json",
   "compilerOptions": {
     "esModuleInterop": true
   },

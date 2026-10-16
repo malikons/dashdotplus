@@ -3,7 +3,7 @@
 # If you need instructions on how to run dashdot, please have a look at the README.md file in the root of the project.
 services:
   dash:
-    # image: mauricenino/dashdot:dev
+    # image: ghcr.io/malikons/dashdotplus:dev
     build:
       context: ..
       dockerfile: ./docker/Dockerfile

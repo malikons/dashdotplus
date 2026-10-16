@@ -1,4 +1,4 @@
-import type { Transient } from '@dashdot/common';
+import type { Transient } from '@dashdotplus/common';
 import { motion } from 'framer-motion';
 import { forwardRef } from 'react';
 import styled from 'styled-components';

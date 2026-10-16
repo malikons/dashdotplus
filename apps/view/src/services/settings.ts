@@ -1,4 +1,4 @@
-import type { ContainerMetric } from '@dashdot/common';
+import type { ContainerMetric } from '@dashdotplus/common';
 import { type Dispatch, useEffect, useState } from 'react';
 import store from 'store';
 import type { ThemeId } from '../theme';

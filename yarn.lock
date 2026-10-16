@@ -1545,11 +1545,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dashdot/cli@workspace:apps/cli":
+"@dashdotplus/cli@workspace:apps/cli":
   version: 0.0.0-use.local
-  resolution: "@dashdot/cli@workspace:apps/cli"
+  resolution: "@dashdotplus/cli@workspace:apps/cli"
   dependencies:
-    "@dashdot/typescript-config": "npm:*"
+    "@dashdotplus/typescript-config": "npm:*"
     dedent: "npm:1.7.1"
     esbuild: "npm:0.27.3"
     systeminformation: "npm:5.31.1"
@@ -1557,17 +1557,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@dashdot/common@npm:*, @dashdot/common@workspace:packages/common":
+"@dashdotplus/common@npm:*, @dashdotplus/common@workspace:packages/common":
   version: 0.0.0-use.local
-  resolution: "@dashdot/common@workspace:packages/common"
+  resolution: "@dashdotplus/common@workspace:packages/common"
   dependencies:
-    "@dashdot/typescript-config": "npm:*"
+    "@dashdotplus/typescript-config": "npm:*"
   languageName: unknown
   linkType: soft
 
-"@dashdot/docs@workspace:apps/docs":
+"@dashdotplus/docs@workspace:apps/docs":
   version: 0.0.0-use.local
-  resolution: "@dashdot/docs@workspace:apps/docs"
+  resolution: "@dashdotplus/docs@workspace:apps/docs"
   dependencies:
     "@orama/orama": "npm:^3.1.18"
     "@tailwindcss/postcss": "npm:^4.1.18"
@@ -1601,12 +1601,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@dashdot/server@workspace:apps/server":
+"@dashdotplus/server@workspace:apps/server":
   version: 0.0.0-use.local
-  resolution: "@dashdot/server@workspace:apps/server"
+  resolution: "@dashdotplus/server@workspace:apps/server"
   dependencies:
-    "@dashdot/common": "npm:*"
-    "@dashdot/typescript-config": "npm:*"
+    "@dashdotplus/common": "npm:*"
+    "@dashdotplus/typescript-config": "npm:*"
     "@types/chai": "npm:5.2.3"
     "@types/compression": "npm:^1"
     "@types/cors": "npm:^2"
@@ -1635,17 +1635,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@dashdot/typescript-config@npm:*, @dashdot/typescript-config@workspace:packages/typescript-config":
+"@dashdotplus/typescript-config@npm:*, @dashdotplus/typescript-config@workspace:packages/typescript-config":
   version: 0.0.0-use.local
-  resolution: "@dashdot/typescript-config@workspace:packages/typescript-config"
+  resolution: "@dashdotplus/typescript-config@workspace:packages/typescript-config"
   languageName: unknown
   linkType: soft
 
-"@dashdot/view@workspace:apps/view":
+"@dashdotplus/view@workspace:apps/view":
   version: 0.0.0-use.local
-  resolution: "@dashdot/view@workspace:apps/view"
+  resolution: "@dashdotplus/view@workspace:apps/view"
   dependencies:
-    "@dashdot/common": "npm:*"
+    "@dashdotplus/common": "npm:*"
     "@emotion/memoize": "npm:0.9.0"
     "@emotion/react": "npm:11.14.0"
     "@fortawesome/fontawesome-svg-core": "npm:7.1.0"
@@ -9721,9 +9721,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dashdot@workspace:.":
+"dashdotplus@workspace:.":
   version: 0.0.0-use.local
-  resolution: "dashdot@workspace:."
+  resolution: "dashdotplus@workspace:."
   dependencies:
     "@biomejs/biome": "npm:2.3.13"
     "@commitlint/cli": "npm:20.3.1"

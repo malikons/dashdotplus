@@ -1,4 +1,4 @@
-import type { Config, CpuInfo, CpuLoad } from '@dashdot/common';
+import type { Config, CpuInfo, CpuLoad } from '@dashdotplus/common';
 import { faMicrochip } from '@fortawesome/free-solid-svg-icons';
 import type { Variants } from 'framer-motion';
 import type { FC } from 'react';

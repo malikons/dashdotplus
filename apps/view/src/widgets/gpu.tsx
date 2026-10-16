@@ -1,4 +1,4 @@
-import type { Config, GpuInfo, GpuLoad } from '@dashdot/common';
+import type { Config, GpuInfo, GpuLoad } from '@dashdotplus/common';
 import { faDesktop } from '@fortawesome/free-solid-svg-icons';
 import { type FC, useMemo, useState } from 'react';
 import { YAxis } from 'recharts';

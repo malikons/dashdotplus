@@ -1,4 +1,4 @@
-import type { Transient } from '@dashdot/common';
+import type { Transient } from '@dashdotplus/common';
 import { motion } from 'framer-motion';
 import { forwardRef, type ReactElement } from 'react';
 import { BeatLoader } from 'react-spinners';

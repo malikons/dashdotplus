@@ -1,4 +1,4 @@
-import type { Transient } from '@dashdot/common';
+import type { Transient } from '@dashdotplus/common';
 import { motion, type Variants } from 'framer-motion';
 import { type FC, useEffect } from 'react';
 import SimpleBar from 'simplebar-react';

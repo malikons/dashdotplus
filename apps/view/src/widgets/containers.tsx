@@ -4,7 +4,7 @@ import type {
   ContainerStat,
   ContainersInfo,
   ContainersLoad,
-} from '@dashdot/common';
+} from '@dashdotplus/common';
 import { faDocker } from '@fortawesome/free-brands-svg-icons';
 import { Segmented } from 'antd';
 import type { Variants } from 'framer-motion';

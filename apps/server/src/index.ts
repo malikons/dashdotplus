@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
-import { urlJoin } from '@dashdot/common';
+import { urlJoin } from '@dashdotplus/common';
 import compression from 'compression';
 import cors from 'cors';
 import cronParser from 'cronstrue';

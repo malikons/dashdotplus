@@ -1,4 +1,4 @@
-import type { Config, OsInfo, Transient } from '@dashdot/common';
+import type { Config, OsInfo, Transient } from '@dashdotplus/common';
 import {
   faApple,
   faCentos,
@@ -85,6 +85,13 @@ const ServerName = styled.span`
 const StandaloneAppendix = styled(ServerName)`
   font-size: 3rem;
   margin-top: 18px;
+`;
+
+// the plus carries the accent, so "dash.+" reads as one deliberate mark
+// rather than the old name with a character bolted on
+const Plus = styled.span`
+  color: ${(props) => props.theme.colors.primary};
+  font-weight: bold;
 `;
 
 const ButtonsContainer = styled.div`
@@ -236,7 +243,7 @@ export const ServerWidget: FC<ServerWidgetProps> = ({ data, config }) => {
       ghost
       shape="circle"
       icon={<FontAwesomeIcon icon={faGithub} />}
-      href="https://github.com/MauriceNino/dashdot"
+      href="https://github.com/malikons/dashdotplus"
       target="_blank"
       aria-label="GitHub Link"
     />
@@ -283,11 +290,17 @@ export const ServerWidget: FC<ServerWidgetProps> = ({ data, config }) => {
       <Heading>
         {config?.show_host && host ? (
           <>
-            <Appendix>dash.</Appendix>
+            <Appendix>
+              dash.
+              <Plus>+</Plus>
+            </Appendix>
             <ServerName>{host}</ServerName>
           </>
         ) : (
-          <StandaloneAppendix>dash.</StandaloneAppendix>
+          <StandaloneAppendix>
+            dash.
+            <Plus>+</Plus>
+          </StandaloneAppendix>
         )}
       </Heading>
 

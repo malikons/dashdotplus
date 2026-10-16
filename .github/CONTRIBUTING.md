@@ -1,11 +1,11 @@
 # Contributing
 
 The simplest way of contributing is to create
-[a new issue](https://github.com/MauriceNino/dashdot/issues) using the
+[a new issue](https://github.com/malikons/dashdotplus/issues) using the
 corresponding templates for feature-requests and bug-reports.
 
 If you are able to, you can also create a
-[pull request](https://github.com/MauriceNino/dashdot/pulls) to add the wanted
+[pull request](https://github.com/malikons/dashdotplus/pulls) to add the wanted
 features or fix the found bug yourself. Any contribution is highly appreciated!
 
 ## Setup
@@ -13,8 +13,8 @@ features or fix the found bug yourself. Any contribution is highly appreciated!
 To start working on this project, run the following series of commands:
 
 ```bash
-git clone https://github.com/MauriceNino/dashdot &&\
-  cd dashdot &&\
+git clone https://github.com/malikons/dashdotplus &&\
+  cd dashdotplus &&\
   yarn &&\
   yarn build
 ```
@@ -31,7 +31,7 @@ yarn dev
 
 ## Git
 
-Development is done on the `dev` branch, so please use that as the base branch in your work.
+Development is done on the `main` branch, so please use that as the base branch in your work.
 
 This project uses semantic commit messages - if you are unsure on how to create a semantic commit message,
 you can check out the [Semantic Commit Message Standards](https://www.conventionalcommits.org/en/v1.0.0/),

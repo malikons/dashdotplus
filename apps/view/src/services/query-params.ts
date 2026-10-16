@@ -50,8 +50,6 @@ export const useQuery = (): QueryResult =>
   useMemo(() => {
     const query = qs.parse(window.location.search, { ignoreQueryPrefix: true });
 
-    console.log(query);
-
     if (query.graph != null) {
       return {
         singleWidget: true,

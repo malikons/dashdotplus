@@ -39,7 +39,10 @@ class LazyObservable<T> implements Subscribable<T> {
     private intervalMs: number,
     private dataFactory: () => Promise<T>,
   ) {
-    if (this.runInBackground) {
+    // `enabled` is false when the widget is not part of DASHDOT_WIDGET_LIST.
+    // Nothing can ever observe those values then (see `subscribe`), so starting
+    // the background poll would only waste work and emit unsolicited logs.
+    if (this.enabled && this.runInBackground) {
       this.tryStart();
     }
   }

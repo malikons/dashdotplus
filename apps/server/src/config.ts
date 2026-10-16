@@ -104,6 +104,23 @@ export const CONFIG: Config = {
   gpu_shown_datapoints: numNull(penv('GPU_SHOWN_DATAPOINTS')) ?? 20,
   gpu_poll_interval: numNull(penv('GPU_POLL_INTERVAL')) ?? 1000,
 
+  containers_widget_items_per_page:
+    numNull(penv('CONTAINERS_WIDGET_ITEMS_PER_PAGE')) ?? 4,
+  containers_widget_grow: numNull(penv('CONTAINERS_WIDGET_GROW')) ?? 6,
+  containers_widget_min_width:
+    numNull(penv('CONTAINERS_WIDGET_MIN_WIDTH')) ?? 700,
+  containers_shown_datapoints:
+    numNull(penv('CONTAINERS_SHOWN_DATAPOINTS')) ?? 60,
+  // every poll needs one 1s stats sample per container, fetched in parallel,
+  // so keep this comfortably above the time that takes
+  containers_poll_interval: numNull(penv('CONTAINERS_POLL_INTERVAL')) ?? 5000,
+  containers_default_metric:
+    (penv(
+      'CONTAINERS_DEFAULT_METRIC',
+    ) as Config['containers_default_metric']) ?? 'cpu',
+  containers_exclude: lst(penv('CONTAINERS_EXCLUDE') ?? ''),
+  docker_socket_path: penv('DOCKER_SOCKET_PATH') ?? '/var/run/docker.sock',
+
   override: {
     os: penv('OVERRIDE_OS'),
     arch: penv('OVERRIDE_ARCH'),

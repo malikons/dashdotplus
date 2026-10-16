@@ -69,6 +69,46 @@ export type GpuLoad = {
   }[];
 };
 
+export type ContainerMetric = 'cpu' | 'mem' | 'net' | 'disk';
+
+export type ContainerStat = {
+  id: string;
+  name: string;
+  image: string;
+  state: string;
+  status: string;
+
+  // % of the TOTAL host CPU capacity, so all containers sum up to
+  // (at most) the value shown by the host cpu widget
+  cpu: number;
+
+  memUsed: number;
+  // 0 when the container has no memory limit of its own
+  memLimit: number;
+
+  netRx: number;
+  netTx: number;
+  netRxTotal: number;
+  netTxTotal: number;
+
+  diskRead: number;
+  diskWrite: number;
+  diskReadTotal: number;
+  diskWriteTotal: number;
+
+  pids: number;
+};
+
+export type ContainersLoad = {
+  available: boolean;
+  containers: ContainerStat[];
+};
+
+export type ContainersInfo = {
+  available: boolean;
+  hostRam: number;
+};
+
 export type OsInfo = {
   platform: string;
   distro: string;
@@ -87,6 +127,7 @@ export type HardwareInfo = {
   storage: StorageInfo;
   network: NetworkInfo;
   gpu: GpuInfo;
+  containers: ContainersInfo;
 };
 
 export type Config = {
@@ -116,7 +157,15 @@ export type Config = {
   gpu_model_filter: string[];
 
   // Widgets, Labels
-  widget_list: ('os' | 'cpu' | 'storage' | 'ram' | 'network' | 'gpu')[];
+  widget_list: (
+    | 'os'
+    | 'cpu'
+    | 'storage'
+    | 'ram'
+    | 'network'
+    | 'gpu'
+    | 'containers'
+  )[];
   os_label_list: ('os' | 'arch' | 'up_since' | 'dash_version')[];
   cpu_label_list: ('brand' | 'model' | 'cores' | 'threads' | 'frequency')[];
   storage_label_list: ('brand' | 'size' | 'type' | 'raid')[];
@@ -166,6 +215,16 @@ export type Config = {
   gpu_widget_min_width: number;
   gpu_shown_datapoints: number;
   gpu_poll_interval: number;
+
+  // Containers Widget
+  containers_widget_items_per_page: number;
+  containers_widget_grow: number;
+  containers_widget_min_width: number;
+  containers_shown_datapoints: number;
+  containers_poll_interval: number;
+  containers_default_metric: ContainerMetric;
+  containers_exclude: string[];
+  docker_socket_path: string;
 
   // Overrides
   override: {

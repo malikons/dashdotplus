@@ -63,8 +63,12 @@ if (process.env.NODE_ENV === 'production') {
 if (!CONFIG.disable_integrations) {
   const getVersionFile = () => {
     try {
+      // the prod image writes version.json to /app/version.json, one level
+      // above the bundled server at /app/server/dist - hence two levels up,
+      // not three. From-source builds still have no version.json here and
+      // fall through to the warning below.
       return JSON.parse(
-        readFileSync(path.join(__dirname, '../../../version.json'), 'utf-8'),
+        readFileSync(path.join(__dirname, '../../version.json'), 'utf-8'),
       );
     } catch (_e) {
       console.warn(

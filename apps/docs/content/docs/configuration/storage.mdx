@@ -5,16 +5,61 @@ tags:
   - Styles
 ---
 
+## How storage is measured
+
+Worth reading before the options below, because it explains numbers that
+otherwise look wrong.
+
+**One entry per physical disk.** dash.+ enumerates block devices, drops the
+ones in [`DASHDOT_FS_DEVICE_FILTER`](#dashdot_fs_device_filter) and the virtual
+ones (zram), and produces one entry per remaining disk. Disks that belong to the
+same Linux md RAID array are collapsed into a single entry carrying all of its
+members.
+
+**Usage is measured per filesystem and matched back to its disk.** For each
+disk, the filesystems mounted beneath `/mnt/host` are matched to it - by mount
+path, by UUID, and by device prefix (so `nvme0n1` picks up `nvme0n1p1` and
+`nvme0n1p2`). Three rules follow from that:
+
+1. **A filesystem is counted once, however many times it is mounted.** Btrfs
+   subvolumes expose `/` and `/home` separately, containers bind-mount
+   `/etc/hostname`, and Docker's own rootfs presents the same partition again.
+   Every one of those mounts reports the size and used of the *whole*
+   filesystem, so summing them used to report 93 GiB used on a 64 GiB disk. Each
+   filesystem now contributes exactly one set of numbers.
+2. **Unpartitioned space counts as used.** A 1 TB disk with a 500 GB partition
+   reads 50% used, not "0% of the disk is free" - the rest of the device is not
+   available to anything. A boot partition is folded into its disk the same way.
+3. **A disk with no recognised filesystem reads "No mount found".** This is
+   reported as `-1` rather than `0`, because an unmounted disk is not an empty
+   one. It renders as a dashed, empty bar and is excluded from the totals.
+
+**Several disks.** By default all disks are summed into a single donut showing
+total used against total capacity. Toggle **Split View** - which only appears
+when there is more than one disk - for one bar per disk, paged
+[`DASHDOT_STORAGE_WIDGET_ITEMS_PER_PAGE`](#dashdot_storage_widget_items_per_page)
+at a time. Percentages shown in the bar are the *real* percentage, so a disk
+over 100% still reports its true figure while the bar stays clamped.
+
+Network and virtual filesystems are excluded by
+[`DASHDOT_FS_TYPE_FILTER`](#dashdot_fs_type_filter) by default, which is why an
+NFS or mergerfs mount does not invent a phantom drive. See
+[Troubleshooting](/docs/troubleshooting#the-storage-percentage-does-not-match-df)
+if a number still disagrees with `df`.
+
 ## Options
 
 ### `DASHDOT_STORAGE_LABEL_LIST`
 
 Selects which data is shown in the storage widget.
 
-The available options are: `brand`, `size`, `type`.
+The available options are: `brand`, `type`, `size`, `raid`. `raid` only applies
+to disks that belong to a Linux md RAID array, and is ignored otherwise.
+
+The order of the list is the order the labels are displayed in.
 
 - type: `string (comma separated list)`
-- default: `brand,size,type`
+- default: `brand,type,size,raid`
 
 ### `DASHDOT_FS_DEVICE_FILTER`
 
@@ -25,24 +70,34 @@ If you don't know the device names of your drives, have a look at the log of das
 storage: {
   layout: [
     {
-      // highlight-next-line
-      device: 'nvme0n1',
-      brand: 'Samsung',
       size: 500107862016,
-      type: 'NVMe',
-      raidGroup: '',
+      disks: [
+        {
+          // highlight-next-line
+          device: 'nvme0n1',
+          brand: 'Samsung',
+          type: 'NVMe',
+        },
+      ],
     },
     {
-      // highlight-next-line
-      device: 'sda',
-      brand: 'DELL',
       size: 4000225165312,
-      type: 'HD',
-      raidGroup: '',
+      disks: [
+        { device: 'sda', brand: 'DELL', type: 'HD' },
+        // highlight-next-line
+        { device: 'sdb', brand: 'DELL', type: 'HD' },
+      ],
+      raidLabel: 'md0',
+      raidName: 'md127',
+      raidType: 'RAID_1',
     },
   ];
 }
 ```
+
+Note the shape: a disk's identity lives under `disks`, and the two `sdb` entries
+above are one RAID array, not two drives. The value to pass to the filters and
+overrides is `disks[].device`.
 
 - type: `string (comma separated list)`
 - default: `unset`

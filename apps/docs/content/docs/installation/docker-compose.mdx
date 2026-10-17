@@ -8,23 +8,74 @@ tags:
   - Docker-Compose
 ---
 
-```yaml
-version: '3.5'
+## Basic setup
 
+```yaml
 services:
   dash:
-    image: ghcr.io/malikons/dashdotplus:latest
+    image: ghcr.io/malikons/dashdotplus:1.0.0
     restart: unless-stopped
     privileged: true
     ports:
       - '80:3001'
     volumes:
       - /:/mnt/host:ro
+      # Needed by the containers widget, which is enabled by default
+      - /var/run/docker.sock:/var/run/docker.sock
+```
+
+That is the whole file. Every setting below is optional - dash.+ runs and finds
+its own hardware without any of them.
+
+### What each part is for
+
+| Part | Why it is there |
+| ---- | --------------- |
+| `/:/mnt/host:ro` | The dashboard reads the host's `/proc`, `/sys`, `df` output and OS release file through this mount. Read-only, and it is what makes the widget list self-configuring. |
+| `/var/run/docker.sock:/var/run/docker.sock` | Read access to the Docker Engine API. The containers widget is on by default and uses it to list containers and read their stats. |
+| `privileged: true` | Needed to read block-device identity, S.M.A.R.T.-adjacent data and hardware sensors on most hosts. If you drop it, expect the storage brand/type and temperature readings to go missing. |
+
+<Callout title="If you do not want to mount the Docker socket" type="warn">
+Mounting the socket grants the container **read access to the Docker Engine API**,
+which is close to root on the host. If that is more access than you want to give
+a dashboard, leave the socket out and drop `containers` from the widget list:
+
+```yaml
+    environment:
+      DASHDOT_WIDGET_LIST: 'os,cpu,storage,ram,network'
+```
+
+Without the socket the containers widget is simply not collected and not shown -
+no error state, no log noise. There is no need to change anything else.
+</Callout>
+
+## Choosing an image tag
+
+```yaml
+    image: ghcr.io/malikons/dashdotplus:1.0.0
+```
+
+| Tag | Meaning |
+| --- | ------- |
+| `1.0.0` | A specific release. Reproducible, and the recommended choice for anything you do not want to change under you. |
+| `1.0` | Moves with patch releases of that minor version. |
+| `latest` | The newest published release. |
+| `main` | Built straight from the `main` branch, labelled `1.0.0-dev.<sha>`. Useful for testing a fix before it is released, not for a machine you rely on. |
+
+The running version is shown by the dashboard itself - hover the GitHub icon in
+the OS widget, or set [`DASHDOT_SHOW_DASH_VERSION`](/docs/configuration/basic#dashdot_show_dash_version)
+to `bottom_right`.
+
+To upgrade, pull and recreate:
+
+```bash
+docker compose pull && docker compose up -d
 ```
 
 ## Configuration
 
-Config options can optionally set, by using the [environment](https://docs.docker.com/compose/compose-file/#environment) field.
+Config options can optionally be set, by using the
+[environment](https://docs.docker.com/compose/compose-file/#environment) field.
 
 ```yaml
 services:
@@ -33,6 +84,9 @@ services:
       DASHDOT_ENABLE_CPU_TEMPS: 'true'
     # ...
 ```
+
+See [Basic Configuration](/docs/configuration/basic) for the full list, or the per-widget pages
+from the [Configuration overview](/docs/configuration).
 
 ## GPU Support
 
@@ -44,8 +98,6 @@ docker build -f docker/Dockerfile.nvidia --build-arg VERSION=1.0.0 -t dashdotplu
 ```
 
 ```yaml
-version: '3.5'
-
 services:
   dash:
     image: dashdotplus:nvidia

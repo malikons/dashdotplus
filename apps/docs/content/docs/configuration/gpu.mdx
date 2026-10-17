@@ -6,8 +6,11 @@ tags:
 ---
 
 <Callout title="Note" type="warn">
-- To use the GPU widget, make sure to include it in the [`DASHDOT_WIDGET_LIST`](./basic#dashdot_widget_list).
-- Also, if you are running the docker image, make sure to use the `nvidia` tag (see [Installation with Docker](../installation/docker#gpu-support)).
+- To use the GPU widget, make sure to include it in the
+  [`DASHDOT_WIDGET_LIST`](/docs/configuration/basic#dashdot_widget_list).
+- GPU support needs the CUDA-based image, which this repository's CI does **not**
+  publish - you build it yourself. See
+  [GPU support](/docs/installation/docker#gpu-support).
 </Callout>
 
 ## Options
@@ -19,7 +22,7 @@ Selects which data is shown in the gpu widget.
 The available options are: `brand`, `model`, `memory`.
 
 - type: `string (comma separated list)`
-- default: `brand, model, memory`
+- default: `brand,model,memory`
 
 ### `DASHDOT_GPU_BRAND_FILTER`
 

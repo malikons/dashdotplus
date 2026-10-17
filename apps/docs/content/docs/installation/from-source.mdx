@@ -20,7 +20,24 @@ To run this repository from source, you need to have the following installed:
 - [git](https://git-scm.com/)
 - [speedtest](https://www.speedtest.net/apps/cli) (recommended)
   - or alternatively: [speedtest-cli](https://github.com/sivel/speedtest-cli)
-  - or alternatively: [use local file](../configuration/network#dashdot_speed_test_from_path)
+  - or alternatively: [use local file](/docs/configuration/network#dashdot_speed_test_from_path)
+
+<Callout title="Yarn 4 is required" type="info">
+This repository ships its own Yarn release in `.yarn/releases/`, and
+`.yarnrc.yml` points at it. If `yarn` on your machine is missing or older than
+4, enable it once with
+[corepack](https://nodejs.org/api/corepack.html):
+
+```bash
+corepack enable
+```
+
+You can also skip `yarn` entirely and invoke the bundled release directly:
+
+```bash
+node .yarn/releases/yarn-4.12.0.cjs install
+```
+</Callout>
 </Step>
 <Step>
 ## Setup

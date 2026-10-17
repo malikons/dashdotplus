@@ -11,13 +11,28 @@ tags:
 docker container run -it \
   -p 80:3001 \
   -v /:/mnt/host:ro \
+  -v /var/run/docker.sock:/var/run/docker.sock \
   --privileged \
-  ghcr.io/malikons/dashdotplus
+  ghcr.io/malikons/dashdotplus:1.0.0
 ```
+
+<Callout title="The Docker socket is optional, but the widget is not optional about it" type="warn">
+The containers widget is **enabled by default** and reads the Docker Engine API
+through `/var/run/docker.sock`. Mount it as above, or - if you would rather not
+grant a dashboard read access to the Docker API - leave it out and disable the
+widget:
+
+```bash
+  --env DASHDOT_WIDGET_LIST="os,cpu,storage,ram,network" \
+```
+
+Without the socket and without that override, the widget renders one quiet line
+("No containers detected on this host.") and nothing else changes.
+</Callout>
 
 ## Configuration
 
-Config options can optionally passed using the
+Config options can optionally be passed using the
 [`--env`](https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file)
 flag.
 
@@ -30,8 +45,9 @@ docker container run -it \
 ## GPU Support
 
 GPU support needs the CUDA-based image, which this repository's CI does
-**not** publish. Build it yourself - it is identical to the standard image
-apart from its base - then run it with `--gpus all`:
+**not** publish. Build it yourself - it differs from the standard image in its
+base image, its package set and its Node install, and it adds the NVIDIA
+visibility environment - then run it with `--gpus all`:
 
 ```bash
 docker build -f docker/Dockerfile.nvidia --build-arg VERSION=1.0.0 -t dashdotplus:nvidia .

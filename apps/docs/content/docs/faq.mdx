@@ -9,7 +9,7 @@ tags:
 
 In earlier versions, the top-left percentage labels were on by default, but due to UX decisions, they are now
 only enabled on mobile devices. If you want to bring back the old behavior, there is the flag
-[`DASHDOT_ALWAYS_SHOW_PERCENTAGES`](./configuration/basic#dashdot_always_show_percentages) for that.
+[`DASHDOT_ALWAYS_SHOW_PERCENTAGES`](/docs/configuration/basic#dashdot_always_show_percentages) for that.
 
 ## The network information can not be read correctly - what should I do?
 
@@ -19,7 +19,7 @@ bind mount. If you have done so, and it still does not work, please do the follo
 > Check your logs for a message like `Using network interface "xxxxx"`.
 
 **Is this the correct network interface?** If not, please find out your default interface, and pass the name
-manually, using the [`DASHDOT_USE_NETWORK_INTERFACE`](./configuration/network#dashdot_use_network_interface) flag.
+manually, using the [`DASHDOT_USE_NETWORK_INTERFACE`](/docs/configuration/network#dashdot_use_network_interface) flag.
 
 If it **is** the correct network interface, please open a GitHub issue with the relevant log outputs and information.
 
@@ -41,6 +41,57 @@ For this you need to use the following volume mounts:
   - keep in mind that this covers only the most basic mount paths of linux. if your system uses other mount paths,
     you will need to manually add them to the list of volumes, following the pattern `/xxx:/mnt/host/xxx:ro`. To
     check where all your mounts are on your system, you can use the command `df` and run it in a shell.
+
+## Does dash.+ store any data about my machine?
+
+No. There is no database, no logging and no telemetry. The only persistence is
+in your browser: layout and theme preferences live in `localStorage`, per
+browser, and are never sent anywhere. Deleting the container loses nothing.
+
+## Can I hide a widget I do not care about?
+
+Yes - remove it from [`DASHDOT_WIDGET_LIST`](/docs/configuration/basic#dashdot_widget_list).
+An omitted widget is not only hidden, it is never collected, so you also lose
+its polling cost. The order of the list is the order of the widgets.
+
+## Why is the storage percentage different from `df`?
+
+Usually by design: dash.+ reports usage per *physical disk*, so unpartitioned
+space counts as used, a boot partition is folded into its disk, and a filesystem
+mounted at several points is counted once. There is a
+[fuller explanation in Troubleshooting](/docs/troubleshooting#the-storage-percentage-does-not-match-df).
+
+## Why does the containers widget show nothing?
+
+The widget is enabled by default, but it needs read access to the Docker socket.
+Without it you get one quiet line rather than an error. See
+[the containers troubleshooting section](/docs/troubleshooting#the-containers-widget-says-no-containers-detected-on-this-host),
+or drop `containers` from the widget list if you would rather not mount it.
+
+## Do I have to mount the Docker socket?
+
+No, and it is worth thinking about: the socket is close to root on the host. If
+you would rather not grant it, leave the socket out and remove `containers` from
+`DASHDOT_WIDGET_LIST`. Everything else keeps working. See the
+[Docker Compose guide](/docs/installation/docker-compose).
+
+## How do I check which version I am running?
+
+Hover the GitHub icon in the OS widget, or set
+[`DASHDOT_SHOW_DASH_VERSION`](/docs/configuration/basic#dashdot_show_dash_version)
+to `bottom_right`. For scripting:
+
+```bash
+curl -s http://localhost/config | jq '{version, buildhash}'
+```
+
+See [Releases and Upgrading](/docs/releases).
+
+## How do I switch themes?
+
+Use the dropdown at the top of the OS widget. Three themes ship with dash.+:
+the original glass look, an htop-style terminal theme and Windows 98. See
+[Themes](/docs/configuration/themes).
 
 ## Answer not found?
 

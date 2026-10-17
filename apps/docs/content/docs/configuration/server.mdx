@@ -5,6 +5,34 @@ tags:
   - Styles
 ---
 
+## Raspberry Pi and board identity
+
+A Raspberry Pi has no SMBIOS/DMI block, so the usual identity channels are
+empty or report the PCB vendor (`Sony UK` on official boards). dash.+ reads the
+Linux device tree instead - `/proc/device-tree/compatible` and
+`/proc/device-tree/model`, reached through the host mount - and works out the
+board and SoC from it.
+
+| | Source | Example |
+| - | ------ | ------- |
+| **Board** | the `model` entry, cut at ` Model` | `Raspberry Pi 5` |
+| **SoC** | the `compatible` entry with a known vendor prefix | `Broadcom BCM2712` |
+
+This is automatic, needs no configuration, and only applies when the device tree
+genuinely identifies the board. It also fills in the places where the hardware
+reports nothing useful:
+
+- The **CPU brand** becomes the SoC rather than an empty string - see
+  [`DASHDOT_OVERRIDE_CPU_BRAND`](/docs/configuration/cpu#dashdot_override_cpu_brand).
+- The **RAM brand** becomes `<board> (onboard)`, because soldered memory has no
+  SPD to read a manufacturer from - see
+  [`DASHDOT_OVERRIDE_RAM_BRAND`](/docs/configuration/ram#dashdot_override_ram_brand).
+- **Storage brands** are worked out from the drive's model string, since NVMe
+  leaves `VENDOR` empty - see
+  [`DASHDOT_OVERRIDE_STORAGE_BRANDS`](/docs/configuration/storage#dashdot_override_storage_brands).
+
+Where an override is set, the override always wins.
+
 ## Options
 
 ### `DASHDOT_OS_LABEL_LIST`

@@ -1,0 +1,94 @@
+---
+title: Releases and Upgrading
+description: How dash.+ is versioned, what each image tag means, and how to upgrade
+tags:
+  - Installation
+  - Releases
+---
+
+## How dash.+ is versioned
+
+dash.+ versions **independently of upstream dashdot**, and starts at `1.0.0`.
+The two version lines are unrelated: upstream's `6.3.x` does not make this
+fork's `1.0.0` older, because it is a different project with a different feature
+set.
+
+A release is a git tag, and **the tag is authoritative**. The version baked into
+an image is the tag without its `v`, written into `version.json` at build time
+and reported by the dashboard.
+
+Builds straight from the `main` branch are labelled `<version>-dev.<sha>` - for
+example `1.0.0-dev.caabca4` - so a development build can never be mistaken for a
+release.
+
+## Image tags
+
+All images are published to GHCR as a multi-arch manifest (amd64 and arm64,
+built natively, no emulation):
+
+| Tag | Published when | Use it for |
+| --- | -------------- | ---------- |
+| `1.0.0` | A release tag | Reproducible deployments. Recommended. |
+| `1.0` | A release tag | Patch updates within `1.0.x`. |
+| `latest` | A release tag | "Just give me the current release". |
+| `main` | Every push to `main` | Testing a fix before it is released. |
+
+## Seeing what you are running
+
+The dashboard shows its own version. Hover the GitHub icon in the OS widget, or
+set [`DASHDOT_SHOW_DASH_VERSION`](/docs/configuration/basic#dashdot_show_dash_version)
+to `bottom_right` to have it always visible:
+
+```yaml
+    environment:
+      DASHDOT_SHOW_DASH_VERSION: 'bottom_right'
+```
+
+Or ask the API directly:
+
+```bash
+curl -s http://localhost/config | jq '{version, buildhash}'
+```
+
+```json
+{ "version": "1.0.0", "buildhash": "caabca417befd98419ac600e88220f8bb2376b7f" }
+```
+
+`buildhash` is the commit the image was built from, which is enough to tie a
+running container back to a line in the changelog.
+
+## Upgrading
+
+For a compose deployment, two commands:
+
+```bash
+docker compose pull && docker compose up -d
+```
+
+The container is recreated with the new image; your environment variables are
+untouched. Expect a few seconds of downtime on the port.
+
+**If you pin a release tag**, bump it in your compose file when you want to
+move, and nothing changes under you the rest of the time - that is the
+recommended setup for a node you rely on.
+
+**If you track `latest` or `main`**, a restart pulls whatever is newest. Convenient,
+but it means an upstream release can change your dashboard while you sleep.
+
+## Configuration compatibility
+
+The environment variable prefix is `DASHDOT_`, unchanged from upstream dashdot,
+so a compose file written for dashdot carries over as-is. New variables added by
+this fork are additive and optional - see the per-widget configuration pages
+for the full list.
+
+Rolling back is the same operation as upgrading: point the image tag at the
+previous release and recreate.
+
+## What is in a release
+
+Release notes live on the
+[GitHub Releases page](https://github.com/malikons/dashdotplus/releases), and
+the commit history is the detailed record. `v1.0.0` is the first release of the
+fork: the containers widget, device-tree board detection, three themes, fixed
+storage accounting, and correct version reporting.

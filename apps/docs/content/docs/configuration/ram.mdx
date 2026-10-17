@@ -14,7 +14,7 @@ Selects which data is shown in the RAM widget.
 The available options are: `brand`, `size`, `type`, `frequency`.
 
 - type: `string (comma separated list)`
-- default: `brand,size,type,frequency`
+- default: `brand,type,size,frequency`
 
 ## Styles
 
@@ -53,6 +53,11 @@ if you want to use dash.+ on a VPS or a system where the data cannot be
 gathered automatically.
 
 ### `DASHDOT_OVERRIDE_RAM_BRAND`
+
+Memory soldered onto a board has no SPD, so there is no manufacturer to read.
+dash.+ reports `<board> (onboard)` instead - e.g. `Raspberry Pi 5 (onboard)` -
+which makes this override unnecessary on a Pi unless you want different wording.
+See [board identity](/docs/configuration/server#raspberry-pi-and-board-identity).
 
 - type: `string`
 - default: `unset`

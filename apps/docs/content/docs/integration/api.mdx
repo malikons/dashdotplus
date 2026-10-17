@@ -9,7 +9,7 @@ import { ApiPreview } from '@/components/api-preview';
 
 ## Basic
 
-There are two endpoints which can be used to retrieve data about the running dash.+ instance:
+There are three groups of endpoints which can be used to retrieve data about the running dash.+ instance:
 
 ### `/info`
 
@@ -20,8 +20,19 @@ Mostly needed to read the speed-test result at `network.speedDown` and `network.
 
 ### `/config`
 
-Gives information about the configurations of the runnning instance.
+Gives information about the configuration of the running instance.
 Mostly needed to read the enabled widgets at `config.widget_list`.
+
+Note the shape: `version` and `buildhash` sit at the **top level**, while the
+widget settings live one level down under `config`.
+
+```json
+{
+  "version": "1.0.0",
+  "buildhash": "caabca417befd98419ac600e88220f8bb2376b7f",
+  "config": { "widget_list": ["os", "cpu", "storage", "ram", "network", "containers"] }
+}
+```
 
 - Example: `https://<YOUR_SERVER_URL>/config`
 
@@ -34,10 +45,47 @@ Has multiple sub-routes, each returning the current load of the given type.
 - `/load/ram`
 - `/load/network`
 - `/load/gpu`
+- `/load/containers`
 
 <br />
 
 - Example: `https://<YOUR_SERVER_URL>/load/cpu`
+
+### `/load/containers`
+
+Unlike the other load routes this one returns an object, not a bare array:
+
+```json
+{
+  "available": true,
+  "containers": [
+    {
+      "name": "dash",
+      "image": "ghcr.io/malikons/dashdotplus:1.0.0",
+      "state": "running",
+      "cpu": 1.2,
+      "memUsed": 36028416,
+      "memLimit": 8453963776,
+      "netRx": 484.4,
+      "netTx": 31.2,
+      "diskReadTotal": 6291456,
+      "diskWriteTotal": 0,
+      "pids": 12
+    }
+  ]
+}
+```
+
+`available` is `false` when no Docker socket is mounted, and `containers` is
+then empty - this is the same signal the dashboard uses to show its quiet
+"No containers detected on this host." line.
+
+Each entry mixes rate values (`cpu`, `netRx`, `netTx`, `diskRead`,
+`diskWrite`) with cumulative counters (`netRxTotal`, `netTxTotal`,
+`diskReadTotal`, `diskWriteTotal`). Use the counters if you need totals across
+restarts, and the rates for live monitoring. Poll no faster than
+`DASHDOT_CONTAINERS_POLL_INTERVAL` (5s by default) - each request takes a stats
+sample from the Docker API per container.
 
 ## URL Preview
 <ApiPreview />

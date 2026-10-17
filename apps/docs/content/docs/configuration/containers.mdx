@@ -7,7 +7,7 @@ tags:
 
 <Callout title="Note" type="warn">
 - The containers widget is **on by default**. Remove it from
-  [`DASHDOT_WIDGET_LIST`](./basic#dashdot_widget_list) to turn it off - while it
+  [`DASHDOT_WIDGET_LIST`](/docs/configuration/basic#dashdot_widget_list) to turn it off - while it
   is not listed, nothing is polled and no widget is rendered.
 - It needs read access to the Docker socket - see [Socket access](#socket-access).
   If the socket cannot be reached, the widget shows the same calm "No
@@ -37,7 +37,7 @@ the values update - charts do not jump around between polls.
 <Callout title="About the CPU values" type="info">
 The CPU number is the share of **total host capacity**, not of a single core.
 All containers together can therefore never exceed the value shown by the
-[`cpu` widget](./cpu), which makes them directly comparable.
+[`cpu` widget](/docs/configuration/cpu), which makes them directly comparable.
 
 Note that `docker stats` reports per-core normalised values (multiplied by the
 CPU count), so its numbers will read up to `nCPU` times higher than the ones
@@ -59,7 +59,7 @@ delta is detected and reported as `0` instead of a negative rate.
 
 <Callout title="Embedding" type="info">
 Unlike the other widgets, `containers` cannot be embedded as a standalone graph:
-the `graph` query parameter of the [Widgets integration](../integration/widgets)
+the `graph` query parameter of the [Widgets integration](/docs/integration/widgets)
 only accepts `cpu`, `storage`, `ram`, `network` and `gpu`.
 </Callout>
 

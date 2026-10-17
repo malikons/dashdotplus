@@ -31,12 +31,12 @@ For home servers it might work just fine.
 
 <Callout title="Note" type="info">
 If you want to show the data using imperial units, you need to set the
-[`DASHDOT_USE_IMPERIAL`](./basic#dashdot_use_imperial) option to `true`.
+[`DASHDOT_USE_IMPERIAL`](/docs/configuration/basic#dashdot_use_imperial) option to `true`.
 </Callout>
 
 ### `DASHDOT_CPU_TEMPS_MODE`
 
-To choose between average and max CPU temperature (accross all cores). Needs [`DASHDOT_ENABLE_CPU_TEMPS`](./cpu#dashdot_enable_cpu_temps) enabled to work.
+To choose between average and max CPU temperature (across all cores). Needs [`DASHDOT_ENABLE_CPU_TEMPS`](#dashdot_enable_cpu_temps) enabled to work.
 
 The available options are: `avg`, `max`.
 
@@ -91,6 +91,10 @@ if you want to use dash.+ on a VPS or a system where the data cannot be
 gathered automatically.
 
 ### `DASHDOT_OVERRIDE_CPU_BRAND`
+
+On a Raspberry Pi this is detected automatically from the device tree as the
+SoC - e.g. `Broadcom BCM2712` - so the override is only needed to show something
+different. See [board identity](/docs/configuration/server#raspberry-pi-and-board-identity).
 
 - type: `string`
 - default: `unset`

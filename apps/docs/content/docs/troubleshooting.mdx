@@ -1,0 +1,199 @@
+---
+title: Troubleshooting
+description: Symptom-by-symptom fixes for the common dash.+ failure modes
+tags:
+  - Help
+  - Support
+---
+
+Each section is one symptom, why it happens, and what to do. If you get through
+these and it still looks wrong, [open an issue](https://github.com/malikons/dashdotplus/issues)
+with your compose file and the container logs.
+
+## The containers widget says "No containers detected on this host."
+
+This line appears when the dashboard cannot reach the Docker Engine API. It is
+deliberately quiet - no red, no error box - because the widget is enabled by
+default and plenty of hosts have no Docker on them at all.
+
+**Cause 1: no socket mounted.** The most common one. The widget needs the socket
+in the container:
+
+```yaml
+    volumes:
+      - /:/mnt/host:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+```
+
+**Cause 2: a non-default socket path.** Rootless Docker, or a Docker configured
+with a different socket, will not be at `/var/run/docker.sock`. Point at yours:
+
+```yaml
+    environment:
+      DASHDOT_DOCKER_SOCKET_PATH: '/var/run/docker.sock'
+```
+
+**Cause 3: you meant to disable it.** If that is the intent, drop `containers`
+from `DASHDOT_WIDGET_LIST` rather than leaving the widget on screen:
+
+```yaml
+    environment:
+      DASHDOT_WIDGET_LIST: 'os,cpu,storage,ram,network'
+```
+
+An omitted widget is never collected in the background, so this also removes the
+polling cost entirely.
+
+**Check it from inside the container:**
+
+```bash
+docker exec <container> node -e "fetch('http://localhost/v1.40/version').then(r=>r.json()).then(j=>console.log(j.Version))"
+```
+
+A version string means the socket is fine and the problem is elsewhere; a
+connection error means the mount.
+
+## Storage shows "No mount found"
+
+A dashed, empty bar with this label means dash.+ found the *disk* but no
+*filesystem* it recognises on it. The value is reported as `-1` rather than
+being guessed at as zero, because an unmounted disk is not an empty disk.
+
+**Causes.** The partition is unmounted; it is mounted somewhere dash.+ is not
+looking (see the [FAQ entry on partial mounts](/docs/faq#can-you-use-dash-without-mounting-the-whole-host-drive));
+or its filesystem type is in `DASHDOT_FS_TYPE_FILTER`, whose default excludes
+`cifs, 9p, fuse.rclone, fuse.mergerfs, nfs4, iso9660, fuse.shfs, autofs`.
+
+**Fix.** If it is a network or virtual filesystem you want hidden instead, add
+it to `DASHDOT_FS_TYPE_FILTER`. If it is a real local disk, mount it and it
+appears on the next refresh - storage is polled every 60 seconds by default
+(`DASHDOT_STORAGE_POLL_INTERVAL`).
+
+## The storage percentage does not match `df`
+
+Usually not a bug. dash.+ reports usage **per physical disk**, not per
+filesystem, so three things differ from `df` on purpose:
+
+1. **Unpartitioned space counts as used.** A 1 TB disk with a 500 GB partition
+   reads 50% used, not 0% free-of-total - the disk is half spoken for.
+2. **A boot partition is folded into its disk.** `/boot` or `/boot/firmware` on
+   the same drive adds to that drive's total.
+3. **A filesystem mounted more than once is counted once.** Btrfs subvolumes,
+   bind mounts and Docker's own rootfs all report the same filesystem through
+   several paths; counting each of them inflated a single 64 GiB disk to 93 GiB
+   (139%) before. Each filesystem now contributes exactly one set of numbers.
+
+If a number is wildly off - hundreds of percent - that is a real bug worth
+reporting, with your `df -h` and `df -hT` output attached.
+
+## The network widget shows the wrong interface
+
+The host has many interfaces and dash.+ picked one that is not yours - typically
+a Docker bridge or a `veth`.
+
+**Fix.** Find your real interface (`ip -br link` or `ip route`), then pin it:
+
+```yaml
+    environment:
+      DASHDOT_USE_NETWORK_INTERFACE: 'eth0'
+```
+
+The startup log names the interface it chose - look for
+`Using network interface "xxxxx"`. See
+[`DASHDOT_USE_NETWORK_INTERFACE`](/docs/configuration/network#dashdot_use_network_interface).
+
+## There is no CPU temperature
+
+**Cause 1: temperatures are off by default.** Enable them:
+
+```yaml
+    environment:
+      DASHDOT_ENABLE_CPU_TEMPS: 'true'
+```
+
+**Cause 2: no `privileged: true`.** Reading hardware sensors through
+`/sys/class/hwmon` normally needs it.
+
+**Cause 3: the host does not expose it.** Many VMs and some SBCs do not publish
+a CPU thermal zone at all, in which case there is nothing to read and the widget
+shows no temperature rather than a wrong one.
+
+## The page loads but has no styling
+
+Assets return 404. This is nearly always a reverse proxy serving dash.+ from a
+sub-path without telling it.
+
+If the dashboard lives at `https://example.com/dashdotplus`, say so:
+
+```yaml
+    environment:
+      DASHDOT_ROUTING_PATH: '/dashdotplus'
+```
+
+See [`DASHDOT_ROUTING_PATH`](/docs/configuration/basic#dashdot_routing_path).
+
+## The version shows nothing when I hover the GitHub icon
+
+The version is read from a `version.json` written at image build time. If it is
+empty, the image predates that fix - pull a published image:
+
+```bash
+docker compose pull && docker compose up -d
+```
+
+and confirm what it reports:
+
+```bash
+curl -s http://localhost/config | jq '{version, buildhash}'
+```
+
+See [Releases and upgrading](/docs/releases).
+
+## Speedtest fails, or the dashboard is slow to start
+
+The speedtest runs at startup and every four hours after that
+(`DASHDOT_SPEED_TEST_INTERVAL`, or a cron expression via
+`DASHDOT_SPEED_TEST_INTERVAL_CRON`).
+
+- **A licence prompt.** The Ookla CLI needs its licence accepted once:
+  `speedtest --accept-license`.
+- **No network at build time, or a proxy.** Point at a local binary instead with
+  `DASHDOT_SPEED_TEST_FROM_PATH`.
+- **You do not care about it.** Remove `network` from `DASHDOT_WIDGET_LIST`.
+
+The dashboard serves HTTP while the test runs - a slow speedtest does not block
+the page, it only delays the network numbers appearing.
+
+## Container statistics look stale or sparse
+
+Each poll takes a stats sample per container. With many containers that gets
+expensive, so raise the interval:
+
+```yaml
+    environment:
+      DASHDOT_CONTAINERS_POLL_INTERVAL: '15000'   # ms
+      DASHDOT_CONTAINERS_SHOWN_DATAPOINTS: '60'
+```
+
+Two related knobs: `DASHDOT_CONTAINERS_WIDGET_ITEMS_PER_PAGE` controls how many
+containers appear per page of the widget, and `DASHDOT_CONTAINERS_EXCLUDE`
+hides noisy ones from collection entirely. See
+[Containers Configuration](/docs/configuration/containers).
+
+## Nothing renders at all
+
+Work down the list, in order:
+
+1. `docker logs <container>` - check for a startup error.
+2. `curl -i http://localhost/config` from another machine - an empty or refused
+   response means the port mapping or the bind address, not the app.
+3. `/:/mnt/host:ro` present? Without it the app cannot read the host and most
+   widgets stay empty.
+4. `privileged: true` present? Without it block devices and sensors go missing.
+
+## Answer not found?
+
+If you think it is a bug or a missing feature rather than misconfiguration,
+please create a
+[new Issue on GitHub](https://github.com/malikons/dashdotplus/issues) with your
+compose file, the relevant logs, and what you expected to see.

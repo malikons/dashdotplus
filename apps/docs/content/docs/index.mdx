@@ -5,36 +5,85 @@ description: The official documentation for dash.+
 
 ## What is dash.+?
 
-At its core, dash.+ is a monitoring tool that gathers system information and presents
-it through a beautiful, reactive web interface.
-Whether you are running a small Raspberry Pi homelab or a beefy dedicated root server,
-dash.+ gives you an instant overview of:
+dash.+ is a self-hosted monitoring dashboard. It gathers information about the
+machine it runs on and shows it through a reactive web interface - one container,
+one compose file, no database and no agent.
 
-* **CPU:** Usage, model, and core-specific performance.
-* **Memory:** Real-time RAM utilization.
-* **Storage:** Disk space across all mounted drives.
-* **Network:** Up/Down speeds and total data transferred.
-* **GPU:** Support for monitoring modern graphics cards (only NVIDIA via Docker).
-* **Containers:** Per-container CPU, memory, network and disk I/O for every
-  running Docker container, shown alongside the host-level widgets.
+Whether you are running a small Raspberry Pi homelab or a beefy dedicated root
+server, dash.+ gives you an instant overview of:
 
-The dashboard also ships three switchable themes - the original glass look, an
-htop-style terminal theme and Windows 98 - available from a dropdown in the OS
-widget.
+* **OS and board** - distribution, kernel, and on a Raspberry Pi the actual SoC,
+  board model and drive identity read from the device tree.
+* **CPU** - usage per core, model, and temperature.
+* **Storage** - capacity and usage across every disk, with each filesystem
+  counted exactly once.
+* **Memory** - live RAM utilisation.
+* **Network** - up/down speeds and total data transferred.
+* **Containers** - per-container CPU, memory, network and disk I/O for every
+  running Docker container, shown alongside the host widgets.
+* **GPU** - NVIDIA cards, via the CUDA image.
 
-## Configuration
+Three switchable themes ship with it - the original glass look, an htop-style
+terminal theme and Windows 98 - selectable from a dropdown in the OS widget.
 
-dash.+ is designed to be highly plug-and-play, but it offers extensive customization via **Environment Variables**.
-These allow you to tweak the behavior and appearance without touching the source code.
+## Quick start
 
-You can find more details on how to set these variables in our [Configuration Section](docs/configuration).
+```yaml
+services:
+  dash:
+    image: ghcr.io/malikons/dashdotplus:1.0.0
+    restart: unless-stopped
+    privileged: true
+    ports:
+      - '80:3001'
+    volumes:
+      - /:/mnt/host:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+```
 
-## Useful Links
+`docker compose up -d`, then open the port. That is it - dash.+ finds its own
+hardware, and every setting is optional. See the
+[Docker Compose guide](/docs/installation/docker-compose) for what each part is
+for, or the [Installation overview](/docs/installation) for the other ways to
+run it.
 
-Need more info or want to see it in action? Check out these resources:
+## About this fork
 
-* **[Frequently Asked Questions](docs/faq)** - Common troubleshooting steps and "how-to" guides.
-* **[GitHub Repository](https://github.com/malikons/dashdotplus)** - View the source code, report bugs, or contribute.
+dash.+ is a fork of [dashdot](https://github.com/MauriceNino/dashdot) by
+Maurice el-Banna, rebranded and extended. Upstream stays credited in
+[`LICENSE.md`](https://github.com/malikons/dashdotplus/blob/main/LICENSE.md),
+and the environment variable prefix is deliberately still `DASHDOT_`, so
+configuration written for dashdot keeps working unchanged.
+
+The changes on top of upstream are:
+
+| | |
+| - | - |
+| **Containers widget** | Per-container CPU, memory, network and disk I/O, polled over the Docker socket. On by default, and a host with no socket gets one quiet line rather than an error. |
+| **Board detection** | SoC, board and drive identity from `/proc/device-tree`, so a Raspberry Pi reports what it actually is. |
+| **Themes** | Original, htop and Windows 98. |
+| **Storage accounting** | A filesystem mounted at several points - btrfs subvolumes, bind mounts, Docker rootfs - is counted once, so the bar matches `df`. |
+| **Version reporting** | The dashboard reports the version actually built into the image. |
+
+## Where to go next
+
+<Cards>
+  <Card href="/docs/installation" title="Installation">
+    Run dash.+ with Docker, Docker Compose, or from source.
+  </Card>
+  <Card href="/docs/configuration" title="Configuration">
+    Every environment variable, grouped by widget.
+  </Card>
+  <Card href="/docs/troubleshooting" title="Troubleshooting">
+    The common failure modes and how to recognise them.
+  </Card>
+  <Card href="/docs/faq" title="FAQ">
+    Short answers to the questions that come up most.
+  </Card>
+  <Card href="/docs/integration/api" title="API">
+    Query the running instance over HTTP.
+  </Card>
+</Cards>
 
 ## Get in Touch
 

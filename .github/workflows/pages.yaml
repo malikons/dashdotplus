@@ -1,0 +1,72 @@
+name: Docs
+
+# Builds the Fumadocs site in apps/docs and publishes it to GitHub Pages, so
+# the documentation in this repository is actually reachable instead of only
+# building locally.
+#
+# The site is a static export (output: 'export' in apps/docs/next.config.mjs),
+# so there is no server to run - the artifact is plain HTML/CSS/JS.
+#
+# BASE PATH
+#   Served at https://malikons.github.io/dashdotplus/, i.e. under a sub-path,
+#   which is why DOC_BASE_PATH is passed to the build. Registering a domain
+#   later means setting that to an empty string and nothing else changes.
+#
+# No secrets and no extra accounts: this uses the repository's built-in
+# GITHUB_TOKEN and GitHub's own Pages infrastructure.
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "apps/docs/**"
+      - ".github/workflows/pages.yaml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never cancel a deployment that is already publishing.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 20
+
+      # The repository carries its own Yarn release, so the build does not
+      # depend on corepack being present or on a global yarn install.
+      - name: Install dependencies
+        run: node .yarn/releases/yarn-4.12.0.cjs install --immutable
+
+      - name: Build the docs site
+        run: node .yarn/releases/yarn-4.12.0.cjs workspace @dashdotplus/docs build
+        env:
+          DOC_BASE_PATH: /dashdotplus
+
+      - uses: actions/configure-pages@v6
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: apps/docs/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

@@ -6,10 +6,14 @@ const inter = Inter({
   subsets: ['latin'],
 });
 
+// basePath is applied by Next to routes, but not to a metadata icon path in a
+// static export, so the prefix has to be added here.
+const basePath = process.env.DOC_BASE_PATH ?? '';
+
 export const metadata = {
   metadataBase: new URL('https://malikons.github.io/dashdotplus'),
   icons: {
-    icon: '/img/favicon.ico',
+    icon: `${basePath}/img/favicon.ico`,
   },
   title: 'dash.+ Documentation',
   description:

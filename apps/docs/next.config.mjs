@@ -16,6 +16,13 @@ const config = {
   output: 'export',
   basePath,
   assetPrefix: basePath || undefined,
+  // Static export: Next rewrites image and link URLs inside MDX, but not raw
+  // <img> and <a> tags in the landing page component, so that page has to know
+  // the prefix itself. NEXT_PUBLIC_ is inlined into the client bundle at build
+  // time, which is what makes it usable from a 'use client' component.
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath,
+  },
   reactStrictMode: true,
   images: {
     unoptimized: true,

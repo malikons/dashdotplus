@@ -7,7 +7,7 @@ import { CopyToClipboard } from '@/components/copy-to-clipboard';
 import { useMountedTheme } from '@/hooks/useMountedTheme';
 
 const DOCKER_COMMAND =
-  'docker container run -it -p 80:3001 -v /:/mnt/host:ro --privileged ghcr.io/malikons/dashdotplus';
+  'docker container run -it -p 80:3001 -v /:/mnt/host:ro --privileged ghcr.io/malikons/dashdotplus:latest';
 
 // Inlined at build time from DOC_BASE_PATH - see next.config.mjs. Raw <img>
 // and <a> tags do not get the prefix from Next, so they need it explicitly.

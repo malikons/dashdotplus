@@ -3,7 +3,7 @@
 # If you need instructions on how to run dash.+, please have a look at the README.md file in the root of the project.
 services:
   dash:
-    # image: ghcr.io/malikons/dashdotplus:dev
+    # image: ghcr.io/malikons/dashdotplus:main
     build:
       context: ..
       dockerfile: ./docker/Dockerfile

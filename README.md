@@ -57,7 +57,7 @@ docker container run -it \
   -p 80:3001 \
   -v /:/mnt/host:ro \
   --privileged \
-  ghcr.io/malikons/dashdotplus
+  ghcr.io/malikons/dashdotplus:latest
 ```
 
 To get more information on why which flag is needed, or if you want to use other
@@ -114,7 +114,7 @@ stock dashdot setup does not already have:
 ```yaml
 services:
   dash:
-    image: ghcr.io/malikons/dashdotplus
+    image: ghcr.io/malikons/dashdotplus:latest
     restart: unless-stopped
     privileged: true
     ports:

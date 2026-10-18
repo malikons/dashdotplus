@@ -13,7 +13,7 @@ tags:
 ```yaml
 services:
   dash:
-    image: ghcr.io/malikons/dashdotplus:1.0.0
+    image: ghcr.io/malikons/dashdotplus:latest
     restart: unless-stopped
     privileged: true
     ports:
@@ -52,7 +52,7 @@ no error state, no log noise. There is no need to change anything else.
 ## Choosing an image tag
 
 ```yaml
-    image: ghcr.io/malikons/dashdotplus:1.0.0
+    image: ghcr.io/malikons/dashdotplus:latest
 ```
 
 | Tag | Meaning |
@@ -60,7 +60,11 @@ no error state, no log noise. There is no need to change anything else.
 | `1.0.0` | A specific release. Reproducible, and the recommended choice for anything you do not want to change under you. |
 | `1.0` | Moves with patch releases of that minor version. |
 | `latest` | The newest published release. |
-| `main` | Built straight from the `main` branch, labelled `1.0.0-dev.<sha>`. Useful for testing a fix before it is released, not for a machine you rely on. |
+| `main` | Built straight from the `main` branch, labelled `<version>-dev.<sha>`. Useful for testing a fix before it is released, not for a machine you rely on. |
+
+The examples on these pages use `latest`, so a copy-paste always starts you on
+the newest release. Pin the exact version once you know which one suits you -
+then nothing changes under you until you edit the pin yourself.
 
 The running version is shown by the dashboard itself - hover the GitHub icon in
 the OS widget, or set [`DASHDOT_SHOW_DASH_VERSION`](/docs/configuration/basic#dashdot_show_dash_version)
@@ -94,8 +98,11 @@ GPU support needs the CUDA-based image, which this repository's CI does
 **not** publish. Build it yourself and reference the local tag:
 
 ```bash
-docker build -f docker/Dockerfile.nvidia --build-arg VERSION=1.0.0 -t dashdotplus:nvidia .
+docker build -f docker/Dockerfile.nvidia --build-arg VERSION=dev -t dashdotplus:nvidia .
 ```
+
+The `VERSION` build-argument is what the dashboard reports as its version, so
+`dev` keeps a self-built image from claiming to be a release.
 
 ```yaml
 services:

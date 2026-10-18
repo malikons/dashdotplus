@@ -13,8 +13,13 @@ docker container run -it \
   -v /:/mnt/host:ro \
   -v /var/run/docker.sock:/var/run/docker.sock \
   --privileged \
-  ghcr.io/malikons/dashdotplus:1.0.0
+  ghcr.io/malikons/dashdotplus:latest
 ```
+
+`latest` always means the newest published release. If you would rather run a
+version that does not move under you,
+[pin an exact one](/docs/installation/docker-compose#choosing-an-image-tag)
+instead.
 
 <Callout title="The Docker socket is optional, but the widget is not optional about it" type="warn">
 The containers widget is **enabled by default** and reads the Docker Engine API
@@ -50,8 +55,11 @@ base image, its package set and its Node install, and it adds the NVIDIA
 visibility environment - then run it with `--gpus all`:
 
 ```bash
-docker build -f docker/Dockerfile.nvidia --build-arg VERSION=1.0.0 -t dashdotplus:nvidia .
+docker build -f docker/Dockerfile.nvidia --build-arg VERSION=dev -t dashdotplus:nvidia .
 ```
+
+The `VERSION` build-argument is what the dashboard reports as its version, so
+`dev` keeps a self-built image from claiming to be a release.
 
 ```bash
 docker container run -it \

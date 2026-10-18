@@ -10,7 +10,7 @@
 
 services:
   dash:
-    image: ghcr.io/malikons/dashdotplus
+    image: ghcr.io/malikons/dashdotplus:latest
     restart: unless-stopped
     privileged: true
     ports:
